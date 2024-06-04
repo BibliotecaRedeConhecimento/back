@@ -21,11 +21,13 @@ public class Knowledge {
 
 	private String text;
 	
+	private String archive;
 
-	public Knowledge(Long id, String title, String text) {
+	public Knowledge(Long id, String title, String text, String archive) {
 		this.id = id;
 		this.title = title;
 		this.text = text;
+		this.archive = archive;
 	}
 
 	public Knowledge() {
@@ -55,6 +57,17 @@ public class Knowledge {
 		this.text = text;
 	}
 	
+	public String getArchive() {
+		return archive;
+	}
+
+	public void setArchive(String archive) {
+		this.archive = archive;
+	}
+
+	
+	
+	
 	
 	@Override
 	public int hashCode() {
@@ -72,5 +85,6 @@ public class Knowledge {
 		Knowledge other = (Knowledge) obj;
 		return Objects.equals(id, other.id);
 	}
+
 
 }

@@ -40,8 +40,7 @@ public class KnowledgeService {
 	@Transactional
 	public KnowledgeDTO insert(KnowledgeDTO dto) {
 		Knowledge entity = new Knowledge();
-		entity.setTitle(dto.getTitle());
-		entity.setText(dto.getText());
+		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
 		return new KnowledgeDTO(entity);
 	}
@@ -50,8 +49,7 @@ public class KnowledgeService {
 	public KnowledgeDTO update(Long id, KnowledgeDTO dto) {
 		try {
 			Knowledge entity = repository.getReferenceById(id);
-			entity.setTitle(dto.getTitle());
-			entity.setText(dto.getText());
+			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
 			return new KnowledgeDTO(entity);
 		} catch (EntityNotFoundException e) {
@@ -71,4 +69,11 @@ public class KnowledgeService {
 	        	throw new DatabaseException("Integrity violation");
 	   	}
 	}
+	
+	private void copyDtoToEntity(KnowledgeDTO dto, Knowledge entity) {
+
+		entity.setTitle(dto.getTitle());
+		entity.setText(dto.getText());
+		entity.setArchive(dto.getArchive());
+		}
 }
