@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 public class CategoryDTO {
 
 	private Long id;
-	
+	 
 	@NotBlank(message = "Campo requerido")
 	private String name;
 	

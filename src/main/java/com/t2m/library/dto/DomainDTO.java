@@ -2,6 +2,7 @@ package com.t2m.library.dto;
 
 import com.t2m.library.entities.Domain;
 
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Objects;
 
@@ -9,6 +10,7 @@ public class DomainDTO {
 
 
     private Long id;
+    @NotBlank(message = "Campo requerido")
     private String name;
 
     public DomainDTO() {

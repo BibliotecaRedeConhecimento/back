@@ -20,46 +20,46 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.t2m.library.dto.KnowledgeDTO;
 import com.t2m.library.services.KnowledgeService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping(value = "knowledges")
 public class KnowledgeController {
 
 	@Autowired
 	KnowledgeService service;
-	
+
 	@GetMapping
 	public ResponseEntity<Page<KnowledgeDTO>> fidAllKnowledge(Pageable pageable) {
 		Page<KnowledgeDTO> list = service.findAllPaged(pageable);
-		return ResponseEntity.ok().body(list);	
+		return ResponseEntity.ok().body(list);
 	}
-	
-	
+
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<KnowledgeDTO> findById(@PathVariable Long id){
-	KnowledgeDTO dto = service.findById(id);
-	return ResponseEntity.ok().body(dto);
+	public ResponseEntity<KnowledgeDTO> findById(@PathVariable Long id) {
+		KnowledgeDTO dto = service.findById(id);
+		return ResponseEntity.ok().body(dto);
 	}
-	
+
 	@PostMapping
-	public ResponseEntity<KnowledgeDTO> insert(@RequestBody KnowledgeDTO dto){
+	public ResponseEntity<KnowledgeDTO> insert(@Valid @RequestBody KnowledgeDTO dto) {
 		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
-	
+
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<KnowledgeDTO> update(@PathVariable Long id,@RequestBody KnowledgeDTO dto ){
-		
+	public ResponseEntity<KnowledgeDTO> update(@Valid @PathVariable Long id, @RequestBody KnowledgeDTO dto) {
+
 		dto = service.update(id, dto);
-		return ResponseEntity.ok().body(dto);	
+		return ResponseEntity.ok().body(dto);
 	}
-	
-	
+
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<KnowledgeDTO> delete(@PathVariable Long id){
-			service.delete(id);
+	public ResponseEntity<KnowledgeDTO> delete(@PathVariable Long id) {
+		service.delete(id);
 		return ResponseEntity.noContent().build();
-		
+
 	}
 
 }

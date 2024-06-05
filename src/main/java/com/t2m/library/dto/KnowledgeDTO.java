@@ -4,14 +4,17 @@ import java.util.Objects;
 
 import com.t2m.library.entities.Knowledge;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+
 public class KnowledgeDTO {
 
 	private Long id;
-
+	@NotBlank(message = "Campo requerido")
 	private String title;
-
+	@NotBlank(message = "Campo requerido")
 	private String text;
-
+	@NotBlank(message = "Campo requerido")
 	private String archive;
 
 	public KnowledgeDTO() {
