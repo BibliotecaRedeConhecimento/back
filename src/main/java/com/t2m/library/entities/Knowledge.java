@@ -1,28 +1,34 @@
 package com.t2m.library.entities;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_knowledge")
 public class Knowledge {
-
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	private String title;
-
 	private String text;
-	
 	private String archive;
 
+	@ManyToMany
+	@JoinTable(name = "tb_knowledge_category", joinColumns = @JoinColumn(name = "knowledge_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
+	private Set<Category> categories = new HashSet<>();
+	
 	public Knowledge(Long id, String title, String text, String archive) {
 		this.id = id;
 		this.title = title;
@@ -65,9 +71,9 @@ public class Knowledge {
 		this.archive = archive;
 	}
 
-	
-	
-	
+	public Set<Category> getCategories() {
+		return categories;
+	}
 	
 	@Override
 	public int hashCode() {
@@ -85,6 +91,5 @@ public class Knowledge {
 		Knowledge other = (Knowledge) obj;
 		return Objects.equals(id, other.id);
 	}
-
 
 }

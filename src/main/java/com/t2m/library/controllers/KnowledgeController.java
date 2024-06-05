@@ -21,7 +21,7 @@ import com.t2m.library.dto.KnowledgeDTO;
 import com.t2m.library.services.KnowledgeService;
 
 @RestController
-@RequestMapping(value = "knowledge")
+@RequestMapping(value = "knowledges")
 public class KnowledgeController {
 
 	@Autowired
