@@ -1,11 +1,14 @@
 package com.t2m.library.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
+import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Knowledge;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 
 public class KnowledgeDTO {
 
@@ -16,6 +19,8 @@ public class KnowledgeDTO {
 	private String text;
 	@NotBlank(message = "Campo requerido")
 	private String archive;
+	
+	private List<CategoryDTO> categories = new ArrayList<>();
 
 	public KnowledgeDTO() {
 	}
@@ -32,6 +37,11 @@ public class KnowledgeDTO {
 		this.title = entity.getTitle();
 		this.text = entity.getText();
 		this.archive = entity.getArchive();
+	}
+	
+	public KnowledgeDTO(Knowledge entity, Set<Category> categories) {
+		this(entity);
+		categories.forEach(cat -> this.categories.add(new CategoryDTO(cat)));
 	}
 
 	public Long getId() {
@@ -64,6 +74,10 @@ public class KnowledgeDTO {
 
 	public void setArchive(String archive) {
 		this.archive = archive;
+	}
+	
+	public List<CategoryDTO> getCategories() {
+		return categories;
 	}
 
 	@Override

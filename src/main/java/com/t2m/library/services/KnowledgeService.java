@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.t2m.library.dto.CategoryDTO;
 import com.t2m.library.dto.KnowledgeDTO;
+import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Knowledge;
+import com.t2m.library.repositories.CategoryRepository;
 import com.t2m.library.repositories.KnowledgeRepository;
 import com.t2m.library.services.exceptions.ControllerNotFoundException;
 import com.t2m.library.services.exceptions.DatabaseException;
@@ -22,7 +25,10 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class KnowledgeService {
 	@Autowired
-	KnowledgeRepository repository;
+	private KnowledgeRepository repository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	@Transactional(readOnly = true)
 	public Page<KnowledgeDTO> findAllPaged(Pageable pageable) {
@@ -75,5 +81,11 @@ public class KnowledgeService {
 		entity.setTitle(dto.getTitle());
 		entity.setText(dto.getText());
 		entity.setArchive(dto.getArchive());
+		
+		entity.getCategories().clear();
+		for (CategoryDTO catDto: dto.getCategories()) {
+			Category category = categoryRepository.getReferenceById(catDto.getId());
+			entity.getCategories().add(category);
 		}
+	}
 }
