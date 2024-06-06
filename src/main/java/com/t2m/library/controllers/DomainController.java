@@ -2,6 +2,8 @@ package com.t2m.library.controllers;
 
 import com.t2m.library.dto.DomainDTO;
 import com.t2m.library.services.DomainService;
+import	com.t2m.library.dto.DomainDTO.SuccessMenssageDTO ;
+
 
 import jakarta.validation.Valid;
 
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+
+import static org.hibernate.metamodel.model.domain.internal.PluralAttributeBuilder.build;
 
 @RestController
 @RequestMapping(value = "domains")
@@ -34,21 +38,22 @@ public class DomainController {
 	}
 
 	@PostMapping
-	public ResponseEntity<DomainDTO> insert(@Valid @RequestBody DomainDTO dto) {
+	public ResponseEntity<SuccessMenssageDTO> insert(@Valid @RequestBody DomainDTO dto) {
 		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
-		return ResponseEntity.created(uri).body(dto);
+		return ResponseEntity.created(uri).body(new SuccessMenssageDTO());
 	}
 
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<DomainDTO> update(@PathVariable Long id, @Valid @RequestBody DomainDTO dto) {
+	public ResponseEntity<SuccessMenssageDTO> update(@PathVariable Long id, @Valid @RequestBody DomainDTO dto) {
 		dto = service.update(id, dto);
-		return ResponseEntity.ok().body(dto);
+		return ResponseEntity.ok().body(new SuccessMenssageDTO());
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
+	public ResponseEntity<SuccessMenssageDTO> delete(@PathVariable Long id) {
 		service.delete(id);
-		return ResponseEntity.noContent().build();
+		return  ResponseEntity.noContent().build();
 	}
+
 }
