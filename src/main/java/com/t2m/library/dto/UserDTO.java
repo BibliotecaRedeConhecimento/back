@@ -1,5 +1,6 @@
 package com.t2m.library.dto;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +20,7 @@ public class UserDTO {
 	@Email(message = "Favor entrar um email válido")
 	private String email;
 	
-	Set<RoleDTO> roles = new HashSet<>();
+	ArrayList<RoleDTO> roles = new ArrayList<>();
 	
 	public UserDTO() {
 	}
@@ -71,7 +72,7 @@ public class UserDTO {
 		this.email = email;
 	}
 
-	public Set<RoleDTO> getRoles() {
+	public ArrayList<RoleDTO> getRoles() {
 		return roles;
 	}
 }

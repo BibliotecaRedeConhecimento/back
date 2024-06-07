@@ -2,6 +2,8 @@ package com.t2m.library.dto;
 
 import com.t2m.library.entities.Role;
 
+import java.util.Objects;
+
 public class RoleDTO {
 
 	private Long id;
@@ -36,5 +38,13 @@ public class RoleDTO {
 
 	public void setAuthority(String authority) {
 		this.authority = authority;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		RoleDTO roleDTO = (RoleDTO) o;
+		return Objects.equals(this.getId(), roleDTO.getId());
 	}
 }

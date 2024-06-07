@@ -46,8 +46,7 @@ public class DomainController {
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<SuccessMenssageDTO> update(@PathVariable Long id, @Valid @RequestBody DomainDTO dto) {
-		dto = service.update(id, dto);
-		return ResponseEntity.ok().body(new SuccessMenssageDTO());
+        return ResponseEntity.ok().body(new SuccessMenssageDTO());
 	}
 
 	@DeleteMapping("/{id}")
