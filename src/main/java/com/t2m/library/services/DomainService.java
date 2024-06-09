@@ -5,7 +5,10 @@ import com.t2m.library.entities.Domain;
 import com.t2m.library.repositories.DomainRepository;
 import com.t2m.library.services.exceptions.ControllerNotFoundException;
 import com.t2m.library.services.exceptions.DatabaseException;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -21,6 +24,10 @@ public class DomainService {
     @Autowired
     DomainRepository repository;
 
+    @Autowired
+    private EntityManager entityManager;
+
+
     @Transactional(readOnly = true)
     public DomainDTO findById(Long id) {
         Optional<Domain> obj = repository.findById(id);
@@ -30,9 +37,22 @@ public class DomainService {
 
     @Transactional(readOnly = true)
     public Page<DomainDTO> findAllPaged(Pageable pageable) {
+        Session session = entityManager.unwrap(Session.class);
+        Filter filter = session.enableFilter("activeDomainFilter");
+        filter.setParameter("isActive", true);
         Page<Domain> list = repository.findAll(pageable);
         return list.map(x -> new DomainDTO(x));
     }
+
+    @Transactional(readOnly = true)
+    public Page<DomainDTO> findAllPaged(Pageable pageable, boolean isActive) {
+        Session session = entityManager.unwrap(Session.class);
+        Filter filter = session.enableFilter("activeDomainFilter");
+        filter.setParameter("isActive", isActive);
+        Page<Domain> list = repository.findAll(pageable);
+        return list.map(x -> new DomainDTO(x));
+    }
+
     @Transactional
     public DomainDTO insert(DomainDTO dto) {
         Domain entity = new Domain();
@@ -46,6 +66,7 @@ public class DomainService {
             Domain entity = (Domain) repository.getReferenceById(id);
             entity.setName(dto.getName());
             entity = (Domain) repository.save(entity);
+            entity.setActive(dto.isActive());
             return new DomainDTO(entity);
         } catch (EntityNotFoundException e) {
             throw new ControllerNotFoundException("Id not found" + id);

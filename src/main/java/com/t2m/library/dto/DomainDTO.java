@@ -12,6 +12,7 @@ public class DomainDTO {
     private Long id;
     @NotBlank(message = "Campo requerido")
     private String name;
+    private boolean active;
 
     public DomainDTO() {
 
@@ -21,13 +22,16 @@ public class DomainDTO {
         this.name =  name;
     }
     public DomainDTO(Domain entity){
-
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.active = entity.isActive();
     }
 
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
+    public boolean isActive() {return active;}
 
     public static class SuccessMenssageDTO{
         private String message = "Operação realizada com sucesso!";

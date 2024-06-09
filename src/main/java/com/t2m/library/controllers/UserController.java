@@ -1,33 +1,27 @@
 package com.t2m.library.controllers;
 
 import java.net.URI;
-import java.time.Instant;
 
-import com.t2m.library.controllers.exceptions.StandardError;
-import jakarta.servlet.http.HttpServletRequest;
+import com.t2m.library.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.t2m.library.dto.UserDTO;
-import com.t2m.library.dto.UserInsertDTO;
-import com.t2m.library.dto.UserUpdateDTO;
 import com.t2m.library.services.UserService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/users")
+@RequestMapping(value = "users")
 public class UserController {
 
 	@Autowired
 	private UserService service;
-	
+
 	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 	@GetMapping
 	public ResponseEntity<Page<UserDTO>> findAll(Pageable pageable) {

@@ -16,8 +16,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
-import static org.hibernate.metamodel.model.domain.internal.PluralAttributeBuilder.build;
-
 @RestController
 @RequestMapping(value = "domains")
 public class DomainController {
@@ -26,8 +24,8 @@ public class DomainController {
 	DomainService service;
 
 	@GetMapping
-	public ResponseEntity<Page<DomainDTO>> findAll(Pageable pageable) {
-		Page<DomainDTO> list = service.findAllPaged(pageable);
+	public ResponseEntity<Page<DomainDTO>> findAll(Pageable pageable, @RequestParam(name="active", defaultValue = "true") String active) {
+		Page<DomainDTO> list = service.findAllPaged(pageable, Boolean.parseBoolean(active));
 		return ResponseEntity.ok().body(list);
 	}
 
