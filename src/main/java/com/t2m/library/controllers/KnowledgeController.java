@@ -27,10 +27,10 @@ import jakarta.validation.Valid;
 public class KnowledgeController {
 
 	@Autowired
-	KnowledgeService service;
+	private KnowledgeService service;
 
 	@GetMapping
-	public ResponseEntity<Page<KnowledgeDTO>> fidAllKnowledge(Pageable pageable) {
+	public ResponseEntity<Page<KnowledgeDTO>> findAll(Pageable pageable) {
 		Page<KnowledgeDTO> list = service.findAllPaged(pageable);
 		return ResponseEntity.ok().body(list);
 	}

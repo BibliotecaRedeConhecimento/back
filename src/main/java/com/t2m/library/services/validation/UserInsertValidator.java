@@ -1,23 +1,22 @@
 package com.t2m.library.services.validation;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.t2m.library.controllers.exceptions.MissingAuthorizationException;
-import com.t2m.library.dto.RoleDTO;
-import com.t2m.library.entities.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.t2m.library.controllers.exceptions.FieldMessage;
+import com.t2m.library.controllers.exceptions.MissingAuthorizationException;
+import com.t2m.library.dto.RoleDTO;
 import com.t2m.library.dto.UserInsertDTO;
+import com.t2m.library.entities.Role;
 import com.t2m.library.entities.User;
 import com.t2m.library.repositories.UserRepository;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {
 

@@ -21,7 +21,6 @@ import com.t2m.library.services.exceptions.DatabaseException;
 
 import jakarta.persistence.EntityNotFoundException;
 
-
 @Service
 public class KnowledgeService {
 	@Autowired
@@ -33,7 +32,7 @@ public class KnowledgeService {
 	@Transactional(readOnly = true)
 	public Page<KnowledgeDTO> findAllPaged(Pageable pageable) {
 		Page<Knowledge> list = repository.findAll(pageable);
-		return list.map(x -> new KnowledgeDTO(x));
+		return list.map(x -> new KnowledgeDTO(x, x.getCategories()));
 	}
 
 	@Transactional(readOnly = true)
