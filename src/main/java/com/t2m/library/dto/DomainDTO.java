@@ -1,18 +1,21 @@
 package com.t2m.library.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import com.t2m.library.entities.Domain;
 
 import jakarta.validation.constraints.NotBlank;
 
-import java.util.Objects;
-
 public class DomainDTO {
-
 
     private Long id;
     @NotBlank(message = "Campo requerido")
     private String name;
     private boolean active;
+    
+    private List<CategoryDTO> categories = new ArrayList<>();
 
     public DomainDTO() {
 
@@ -33,6 +36,10 @@ public class DomainDTO {
     public void setName(String name) {this.name = name;}
     public boolean isActive() {return active;}
 
+	public List<CategoryDTO> getCategories() {
+		return categories;
+	}
+    
     public static class SuccessMenssageDTO{
         private String message = "Operação realizada com sucesso!";
 
@@ -58,4 +65,5 @@ public class DomainDTO {
         DomainDTO other = (DomainDTO) obj;
         return Objects.equals(id, other.id);
     }
+
 }

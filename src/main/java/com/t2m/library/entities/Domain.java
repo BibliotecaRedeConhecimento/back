@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.*;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "tb_domain")
@@ -17,6 +19,13 @@ public class Domain {
     private Long id;
     private String name;
     private boolean active = true;
+    
+    @ManyToMany(mappedBy = "domains")
+	private Set<Category> categories = new HashSet<>();
+    
+    @ManyToMany
+	@JoinTable(name = "tb_domain_user", joinColumns = @JoinColumn(name = "domain_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	private Set<User> users = new HashSet<>();
 
     public Domain() {}
     public Domain(Long Id, String name){

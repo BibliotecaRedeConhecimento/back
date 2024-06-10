@@ -1,5 +1,7 @@
 package com.t2m.library.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.t2m.library.entities.Category;
@@ -12,6 +14,9 @@ public class CategoryDTO {
 	 
 	@NotBlank(message = "Campo requerido")
 	private String name;
+	
+	private List<DomainDTO> knowledges = new ArrayList<>();
+	private List<DomainDTO> domains = new ArrayList<>();
 	
 	public CategoryDTO() {
 	}
@@ -41,6 +46,14 @@ public class CategoryDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public List<DomainDTO> getKnowledges() {
+		return knowledges;
+	}
+
+	public List<DomainDTO> getDomains() {
+		return domains;
+	}
 
 	@Override
 	public int hashCode() {
@@ -58,5 +71,5 @@ public class CategoryDTO {
 		CategoryDTO other = (CategoryDTO) obj;
 		return Objects.equals(id, other.id);
 	}
-	
+
 }

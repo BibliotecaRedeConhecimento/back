@@ -39,6 +39,9 @@ public class User implements UserDetails {
 		inverseJoinColumns = @JoinColumn(name = "role_id"))	
 	private Set<Role> roles = new HashSet<>();
 	
+	@ManyToMany(mappedBy = "users")
+	private Set<Domain> domains = new HashSet<>();
+	
 	public User() {
 	}
 
@@ -108,6 +111,10 @@ public class User implements UserDetails {
 		return false;
 	}
 	
+	public Set<Domain> getDomains() {
+		return domains;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);

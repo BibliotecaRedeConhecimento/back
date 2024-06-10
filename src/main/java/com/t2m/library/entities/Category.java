@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
@@ -24,7 +26,11 @@ public class Category {
 	private String name;
 	
 	@ManyToMany(mappedBy = "categories")
-	private Set<Knowledge> knowleges = new HashSet<>();
+	private Set<Knowledge> knowledges = new HashSet<>();
+	
+	@ManyToMany
+	@JoinTable(name = "tb_category_domain", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "domain_id"))
+	private Set<Domain> domains = new HashSet<>();
 	
 	public Category() {
 	}
