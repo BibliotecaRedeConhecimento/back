@@ -32,7 +32,7 @@ public class KnowledgeService {
 	@Transactional(readOnly = true)
 	public Page<KnowledgeDTO> findAllPaged(Pageable pageable) {
 		Page<Knowledge> list = repository.findAll(pageable);
-		return list.map(x -> new KnowledgeDTO(x, x.getCategories()));
+		return list.map(x -> new KnowledgeDTO(x));
 	}
 
 	@Transactional(readOnly = true)
