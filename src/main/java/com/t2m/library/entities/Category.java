@@ -13,14 +13,22 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "tb_category")
+@SQLDelete(sql = "UPDATE tb_category SET active = false WHERE id=?")
+@FilterDef(name = "activeCategoryFilter", parameters = @ParamDef(name = "isActive", type = boolean.class))
+@Filter(name = "activeCategoryFilter", condition = "active = :isActive")
 public class Category {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	private boolean active = true;
 	
 	@Column(unique = true)
 	private String name;
@@ -59,6 +67,11 @@ public class Category {
 	public Set<Domain> getDomains() {
 		return domains;
 	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	public boolean isActive() {return active;}
 
 	@Override
 	public int hashCode() {

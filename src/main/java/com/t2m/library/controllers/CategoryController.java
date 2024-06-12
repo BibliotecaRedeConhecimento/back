@@ -2,18 +2,13 @@ package com.t2m.library.controllers;
 
 import java.net.URI;
 
+import com.t2m.library.dto.ActivateDTO;
+import com.t2m.library.dto.DomainDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.t2m.library.dto.CategoryDTO;
@@ -29,8 +24,8 @@ public class CategoryController {
 	CategoryService service;
 	
 	@GetMapping
-	public ResponseEntity<Page<CategoryDTO>> findAll(Pageable pageable) {
-		Page<CategoryDTO> list = service.findAllPaged(pageable);
+	public ResponseEntity<Page<CategoryDTO>> findAll(Pageable pageable,  @RequestParam(name="active", defaultValue = "true") String active) {
+		Page<CategoryDTO> list = service.findAllPaged(pageable, Boolean.parseBoolean(active));
 		return ResponseEntity.ok().body(list);
 	}
 
@@ -51,6 +46,11 @@ public class CategoryController {
 	public ResponseEntity<CategoryDTO> update(@Valid @PathVariable Long id, @RequestBody CategoryDTO dto) {
 		dto = service.update(id, dto);
 		return ResponseEntity.ok().body(dto);
+	}
+	@PutMapping(value = "/{id}/activate")
+	public ResponseEntity<CategoryDTO> activate(@PathVariable Long id, @Valid @RequestBody ActivateDTO dto) {
+		CategoryDTO ddto = service.activate(id, dto);
+		return ResponseEntity.ok().body(new CategoryDTO());
 	}
 	
 	@DeleteMapping(value = "/{id}") 

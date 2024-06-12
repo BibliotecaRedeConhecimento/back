@@ -1,5 +1,6 @@
 package com.t2m.library.services;
 
+import com.t2m.library.dto.ActivateDTO;
 import com.t2m.library.dto.DomainDTO;
 import com.t2m.library.entities.Domain;
 import com.t2m.library.repositories.DomainRepository;
@@ -35,14 +36,6 @@ public class DomainService {
         return new DomainDTO(entity);
     }
 
-    @Transactional(readOnly = true)
-    public Page<DomainDTO> findAllPaged(Pageable pageable) {
-        Session session = entityManager.unwrap(Session.class);
-        Filter filter = session.enableFilter("activeDomainFilter");
-        filter.setParameter("isActive", true);
-        Page<Domain> list = repository.findAll(pageable);
-        return list.map(x -> new DomainDTO(x));
-    }
 
     @Transactional(readOnly = true)
     public Page<DomainDTO> findAllPaged(Pageable pageable, boolean isActive) {
@@ -67,6 +60,17 @@ public class DomainService {
             entity.setName(dto.getName());
             entity = (Domain) repository.save(entity);
             entity.setActive(dto.isActive());
+            return new DomainDTO(entity);
+        } catch (EntityNotFoundException e) {
+            throw new ControllerNotFoundException("Id not found" + id);
+        }
+    }
+    @Transactional
+    public DomainDTO activate(Long id, ActivateDTO dto) {
+        try {
+            Domain entity = (Domain) repository.getReferenceById(id);
+            entity.setActive(dto.isActivated());
+            entity = (Domain) repository.save(entity);
             return new DomainDTO(entity);
         } catch (EntityNotFoundException e) {
             throw new ControllerNotFoundException("Id not found" + id);

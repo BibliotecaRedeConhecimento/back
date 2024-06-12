@@ -19,6 +19,7 @@ public class KnowledgeDTO {
 	private String text;
 	@NotBlank(message = "Campo requerido")
 	private String archive;
+	private boolean active;
 	
 	private List<CategoryDTO> categories = new ArrayList<>();
 
@@ -37,6 +38,7 @@ public class KnowledgeDTO {
 		this.title = entity.getTitle();
 		this.text = entity.getText();
 		this.archive = entity.getArchive();
+		this.active = entity.isActive();
 	}
 	
 	public KnowledgeDTO(Knowledge entity, Set<Category> categories) {
@@ -75,10 +77,12 @@ public class KnowledgeDTO {
 	public void setArchive(String archive) {
 		this.archive = archive;
 	}
-	
+	public boolean isActive() {return active;}
+
 	public List<CategoryDTO> getCategories() {
 		return categories;
 	}
+
 
 	@Override
 	public int hashCode() {

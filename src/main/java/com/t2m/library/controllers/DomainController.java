@@ -1,5 +1,6 @@
 package com.t2m.library.controllers;
 
+import com.t2m.library.dto.ActivateDTO;
 import com.t2m.library.dto.DomainDTO;
 import com.t2m.library.services.DomainService;
 import	com.t2m.library.dto.DomainDTO.SuccessMenssageDTO ;
@@ -44,7 +45,14 @@ public class DomainController {
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<SuccessMenssageDTO> update(@PathVariable Long id, @Valid @RequestBody DomainDTO dto) {
+		dto = service.update(id, dto);
         return ResponseEntity.ok().body(new SuccessMenssageDTO());
+	}
+
+	@PutMapping(value = "/{id}/activate")
+	public ResponseEntity<SuccessMenssageDTO> activate(@PathVariable Long id, @Valid @RequestBody ActivateDTO dto) {
+		DomainDTO ddto = service.activate(id, dto);
+		return ResponseEntity.ok().body(new SuccessMenssageDTO());
 	}
 
 	@DeleteMapping("/{id}")

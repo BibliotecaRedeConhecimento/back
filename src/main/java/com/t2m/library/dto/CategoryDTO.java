@@ -14,8 +14,9 @@ public class CategoryDTO {
 	 
 	@NotBlank(message = "Campo requerido")
 	private String name;
+	private boolean active;
 	
-	private List<DomainDTO> knowledges = new ArrayList<>();
+//	private List<DomainDTO> knowledges = new ArrayList<>();
 	private List<DomainDTO> domains = new ArrayList<>();
 	
 	public CategoryDTO() {
@@ -29,6 +30,7 @@ public class CategoryDTO {
 	public CategoryDTO(Category entity) {
 		this.id = entity.getId();
 		this.name = entity.getName();
+		this.active = entity.isActive();
 	}
 
 	public Long getId() {
@@ -47,9 +49,9 @@ public class CategoryDTO {
 		this.name = name;
 	}
 	
-	public List<DomainDTO> getKnowledges() {
-		return knowledges;
-	}
+//	public List<DomainDTO> getKnowledges() {
+//		return knowledges;
+//	}
 
 	public List<DomainDTO> getDomains() {
 		return domains;

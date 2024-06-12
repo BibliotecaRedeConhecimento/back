@@ -2,6 +2,12 @@ package com.t2m.library.services;
 
 import java.util.Optional;
 
+import com.t2m.library.dto.ActivateDTO;
+import com.t2m.library.dto.DomainDTO;
+import com.t2m.library.entities.Domain;
+import jakarta.persistence.EntityManager;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -25,12 +31,17 @@ import jakarta.persistence.EntityNotFoundException;
 public class KnowledgeService {
 	@Autowired
 	private KnowledgeRepository repository;
+	@Autowired
+	private EntityManager entityManager;
 	
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
 	@Transactional(readOnly = true)
-	public Page<KnowledgeDTO> findAllPaged(Pageable pageable) {
+	public Page<KnowledgeDTO> findAllPaged(Pageable pageable, boolean isActive) {
+		Session session = entityManager.unwrap(Session.class);
+		Filter filter = session.enableFilter("activeKnowledgeFilter");
+		filter.setParameter("isActive", isActive);
 		Page<Knowledge> list = repository.findAll(pageable);
 		return list.map(x -> new KnowledgeDTO(x));
 	}
@@ -56,6 +67,17 @@ public class KnowledgeService {
 			Knowledge entity = repository.getReferenceById(id);
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
+			return new KnowledgeDTO(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ControllerNotFoundException("Id not found" + id);
+		}
+	}
+	@Transactional
+	public KnowledgeDTO activate(Long id, ActivateDTO dto) {
+		try {
+			Knowledge entity = (Knowledge) repository.getReferenceById(id);
+			entity.setActive(dto.isActivated());
+			entity = (Knowledge) repository.save(entity);
 			return new KnowledgeDTO(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ControllerNotFoundException("Id not found" + id);

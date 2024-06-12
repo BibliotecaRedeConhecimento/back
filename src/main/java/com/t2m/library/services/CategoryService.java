@@ -2,6 +2,10 @@ package com.t2m.library.services;
 
 import java.util.Optional;
 
+import com.t2m.library.dto.ActivateDTO;
+import jakarta.persistence.EntityManager;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -26,12 +30,16 @@ public class CategoryService {
 
 	@Autowired
 	CategoryRepository repository;
-	
+	@Autowired
+	private EntityManager entityManager;
 	@Autowired
 	private DomainRepository domainRepository;
 	
 	@Transactional(readOnly = true)
-	public Page<CategoryDTO> findAllPaged(Pageable pageable) {
+	public Page<CategoryDTO> findAllPaged(Pageable pageable, boolean isActive) {
+		Session session = entityManager.unwrap(Session.class);
+		Filter filter = session.enableFilter("activeCategoryFilter");
+		filter.setParameter("isActive", isActive);
 		Page<Category> list = repository.findAll(pageable);
 		return list.map(x -> new CategoryDTO(x));
 	}
@@ -57,6 +65,17 @@ public class CategoryService {
 			Category entity = repository.getReferenceById(id);
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
+			return new CategoryDTO(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ControllerNotFoundException("Id not found" + id);
+		}
+	}
+	@Transactional
+	public CategoryDTO activate(Long id, ActivateDTO dto) {
+		try {
+			Category entity = (Category) repository.getReferenceById(id);
+			entity.setActive(dto.isActivated());
+			entity = (Category) repository.save(entity);
 			return new CategoryDTO(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ControllerNotFoundException("Id not found" + id);
