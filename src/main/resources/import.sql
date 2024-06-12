@@ -14,14 +14,14 @@ INSERT INTO tb_domain(name, active) VALUES ('DevOps', true);
 INSERT INTO tb_domain(name, active) VALUES ('Data Sciente', true);
 INSERT INTO tb_domain(name, active) VALUES ('Gestão', true);
 
-INSERT INTO tb_category(name) VALUES ('Front-End');
-INSERT INTO tb_category(name) VALUES ('Back-End');
-INSERT INTO tb_category(name) VALUES ('Testes de Unidade');
-INSERT INTO tb_category(name) VALUES ('Automação de Testes');
-INSERT INTO tb_category(name) VALUES ('Big Data Analytics');
-INSERT INTO tb_category(name) VALUES ('Infraestrutura como Código (IaC)');
-INSERT INTO tb_category(name) VALUES ('Testes Funcionais');
-INSERT INTO tb_category(name) VALUES ('Análise Exploratória de Dados');
+INSERT INTO tb_category(name, active) VALUES ('Front-End', true);
+INSERT INTO tb_category(name, active) VALUES ('Back-End', true);
+INSERT INTO tb_category(name, active) VALUES ('Testes de Unidade', true);
+INSERT INTO tb_category(name, active) VALUES ('Automação de Testes', true);
+INSERT INTO tb_category(name, active) VALUES ('Big Data Analytics', true);
+INSERT INTO tb_category(name, active) VALUES ('Infraestrutura como Código (IaC)', true);
+INSERT INTO tb_category(name, active) VALUES ('Testes Funcionais', true);
+INSERT INTO tb_category(name, active) VALUES ('Análise Exploratória de Dados', true);
 
 INSERT INTO tb_category_domain(category_id, domain_id) VALUES (1, 1);
 INSERT INTO tb_category_domain(category_id, domain_id) VALUES (2, 1);

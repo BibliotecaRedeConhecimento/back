@@ -28,7 +28,8 @@ public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private boolean active = true;
+	
+	private Boolean active;
 	
 	@Column(unique = true)
 	private String name;
@@ -41,11 +42,13 @@ public class Category {
 	private Set<Domain> domains = new HashSet<>();
 	
 	public Category() {
+		this.active = true;
 	}
 
 	public Category(Long id, String name) {
 		this.id = id;
 		this.name = name;
+		this.active = true;
 	}
 
 	public Long getId() {
@@ -68,10 +71,13 @@ public class Category {
 		return domains;
 	}
 
-	public void setActive(boolean active) {
+	public Boolean getActive() {
+		return active;
+	}
+	
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	public boolean isActive() {return active;}
 
 	@Override
 	public int hashCode() {
