@@ -11,8 +11,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.t2m.library.dto.CategoryDTO;
+import com.t2m.library.dto.DomainDTO;
 import com.t2m.library.entities.Category;
+import com.t2m.library.entities.Domain;
 import com.t2m.library.repositories.CategoryRepository;
+import com.t2m.library.repositories.DomainRepository;
 import com.t2m.library.services.exceptions.ControllerNotFoundException;
 import com.t2m.library.services.exceptions.DatabaseException;
 
@@ -23,6 +26,9 @@ public class CategoryService {
 
 	@Autowired
 	CategoryRepository repository;
+	
+	@Autowired
+	private DomainRepository domainRepository;
 	
 	@Transactional(readOnly = true)
 	public Page<CategoryDTO> findAllPaged(Pageable pageable) {
@@ -40,7 +46,7 @@ public class CategoryService {
 	@Transactional
 	public CategoryDTO insert(CategoryDTO dto) {
 		Category entity = new Category();
-		entity.setName(dto.getName());
+		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
 		return new CategoryDTO(entity);
 	}
@@ -49,7 +55,7 @@ public class CategoryService {
 	public CategoryDTO update(Long id, CategoryDTO dto) {
 		try {
 			Category entity = repository.getReferenceById(id);
-			entity.setName(dto.getName());
+			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
 			return new CategoryDTO(entity);
 		} catch (EntityNotFoundException e) {
@@ -68,6 +74,17 @@ public class CategoryService {
 	    	catch (DataIntegrityViolationException e) {
 	        	throw new DatabaseException("Integrity violation");
 	   	}
+	}
+	
+	private void copyDtoToEntity(CategoryDTO dto, Category entity) {
+
+		entity.setName(dto.getName());
+		
+		entity.getDomains().clear();
+		for (DomainDTO domDto: dto.getDomains()) {
+			Domain domain = domainRepository.getReferenceById(domDto.getId());
+			entity.getDomains().add(domain);
+		}
 	}
 	
 }

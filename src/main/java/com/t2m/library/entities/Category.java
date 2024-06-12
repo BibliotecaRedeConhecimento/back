@@ -56,6 +56,10 @@ public class Category {
 		this.name = name;
 	}
 
+	public Set<Domain> getDomains() {
+		return domains;
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
