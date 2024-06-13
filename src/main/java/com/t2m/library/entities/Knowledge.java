@@ -28,8 +28,7 @@ public class Knowledge {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String title;
-	private String titleImag;
-	private String imag;
+	private String titleMedia;
 	private String introduction;
 	private String description;
 	private String collaborator;
@@ -40,11 +39,10 @@ public class Knowledge {
 	@JoinTable(name = "tb_knowledge_category", joinColumns = @JoinColumn(name = "knowledge_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private Set<Category> categories = new HashSet<>();
 	
-	public Knowledge(Long id, String title, String titleImag,String imag, String introduction, String description, String collaborator, String archive) {
+	public Knowledge(Long id, String title, String titleMedia,String imag, String introduction, String description, String collaborator, String archive) {
 		this.id = id;
 		this.title = title;
-		this.titleImag = titleImag;
-		this.imag = imag;
+		this.titleMedia = titleMedia;
 		this.introduction = introduction;
 		this.description = description;
 		this.collaborator = collaborator;
@@ -69,11 +67,8 @@ public class Knowledge {
 		this.title = title;
 	}
 
-	public String getTitleImag() {return titleImag;}
-	public void setTitleImag(String titleImag) {this.titleImag = titleImag;}
-
-	public String getImag() {return imag;}
-	public void setImag(String imag) {this.imag = imag;}
+	public String getTitleMedia() {return titleMedia;}
+	public void setTitleImag(String titleMedia) {this.titleMedia = titleMedia;}
 
 	public String getIntroduction() {return introduction;}
 	public void setIntroduction(String introduction) {this.introduction = introduction;}

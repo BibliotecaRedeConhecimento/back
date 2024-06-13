@@ -20,7 +20,7 @@ import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "tb_category")
-@SQLDelete(sql = "UPDATE tb_category SET active = false WHERE id=?")
+@SQLDelete(sql = "UPDATE tb_category SET active = false WHERE id=?")/*Todas as querys devem ser feitas no repositorio*/
 @FilterDef(name = "activeCategoryFilter", parameters = @ParamDef(name = "isActive", type = boolean.class))
 @Filter(name = "activeCategoryFilter", condition = "active = :isActive")
 public class Category {

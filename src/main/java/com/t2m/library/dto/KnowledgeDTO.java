@@ -16,9 +16,7 @@ public class KnowledgeDTO {
 	@NotBlank(message = "Campo requerido")
 	private String title;
 	@NotBlank(message = "Campo requerido")
-	private String titleImag;
-	@NotBlank(message = "Campo requerido")
-	private String imag;
+	private String titleMedia;
 	@NotBlank(message = "Campo requerido")
 	private String introduction;
 	@NotBlank(message = "Campo requerido")
@@ -34,11 +32,10 @@ public class KnowledgeDTO {
 	public KnowledgeDTO() {
 	}
 
-	public KnowledgeDTO(Long id, String title, String titleImag,String imag, String introduction, String description, String collaborator, String archive) {
+	public KnowledgeDTO(Long id, String title, String titleMedia, String introduction, String description, String collaborator, String archive) {
 		this.id = id;
 		this.title = title;
-		this.titleImag = titleImag;
-		this.imag = imag;
+		this.titleMedia = titleMedia;
 		this.introduction = introduction;
 		this.description = description;
 		this.collaborator = collaborator;
@@ -48,8 +45,7 @@ public class KnowledgeDTO {
 	public KnowledgeDTO(Knowledge entity) {
 		this.id = entity.getId();
 		this.title = entity.getTitle();
-		this.titleImag = entity.getTitleImag();
-		this.imag = entity.getImag();
+		this.titleMedia = entity.getTitleMedia();
 		this.introduction = entity.getIntroduction();
 		this.description = entity.getDescription();
 		this.collaborator = entity.getCollaborator();
@@ -78,11 +74,9 @@ public class KnowledgeDTO {
 		this.title = title;
 	}
 
-	public String getTitleImag() {return titleImag;}
-	public void setTitleImag(String titleImag) {this.titleImag = titleImag;}
+	public String getTitleMedia() {return titleMedia;}
+	public void setTitleMedia(String titleMedia) {this.titleMedia = titleMedia;}
 
-	public String getImag() {return imag;}
-	public void setImag(String imag) {this.imag = imag;}
 
 	public String getIntroduction() {return introduction;}
 	public void setIntroduction(String introduction) {this.introduction = introduction;}
