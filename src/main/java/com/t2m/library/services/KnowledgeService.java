@@ -100,7 +100,7 @@ public class KnowledgeService {
 	private void copyDtoToEntity(KnowledgeDTO dto, Knowledge entity) {
 
 		entity.setTitle(dto.getTitle());
-		entity.setText(dto.getText());
+		entity.setDescription(dto.getDescription());
 		entity.setArchive(dto.getArchive());
 		
 		entity.getCategories().clear();

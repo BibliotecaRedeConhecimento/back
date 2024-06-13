@@ -28,7 +28,11 @@ public class Knowledge {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String title;
-	private String text;
+	private String titleImag;
+	private String imag;
+	private String introduction;
+	private String description;
+	private String collaborator;
 	private String archive;
 	private boolean active = true;
 
@@ -36,10 +40,14 @@ public class Knowledge {
 	@JoinTable(name = "tb_knowledge_category", joinColumns = @JoinColumn(name = "knowledge_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private Set<Category> categories = new HashSet<>();
 	
-	public Knowledge(Long id, String title, String text, String archive) {
+	public Knowledge(Long id, String title, String titleImag,String imag, String introduction, String description, String collaborator, String archive) {
 		this.id = id;
 		this.title = title;
-		this.text = text;
+		this.titleImag = titleImag;
+		this.imag = imag;
+		this.introduction = introduction;
+		this.description = description;
+		this.collaborator = collaborator;
 		this.archive = archive;
 	}
 
@@ -57,23 +65,28 @@ public class Knowledge {
 	public String getTitle() {
 		return title;
 	}
-
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
-	public String getText() {
-		return text;
-	}
+	public String getTitleImag() {return titleImag;}
+	public void setTitleImag(String titleImag) {this.titleImag = titleImag;}
 
-	public void setText(String text) {
-		this.text = text;
-	}
-	
+	public String getImag() {return imag;}
+	public void setImag(String imag) {this.imag = imag;}
+
+	public String getIntroduction() {return introduction;}
+	public void setIntroduction(String introduction) {this.introduction = introduction;}
+
+	public String getDescription() {return description;}
+	public void setDescription(String description) { this.description = description;}
+
+	public String getCollaborator() {return collaborator;}
+	public void setCollaborator(String collaborator) {this.collaborator = collaborator;}
+
 	public String getArchive() {
 		return archive;
 	}
-
 	public void setArchive(String archive) {
 		this.archive = archive;
 	}

@@ -16,27 +16,43 @@ public class KnowledgeDTO {
 	@NotBlank(message = "Campo requerido")
 	private String title;
 	@NotBlank(message = "Campo requerido")
-	private String text;
+	private String titleImag;
+	@NotBlank(message = "Campo requerido")
+	private String imag;
+	@NotBlank(message = "Campo requerido")
+	private String introduction;
+	@NotBlank(message = "Campo requerido")
+	private String description;
+	@NotBlank(message = "Campo requerido")
+	private String collaborator;
 	@NotBlank(message = "Campo requerido")
 	private String archive;
-	private boolean active;
+	private boolean active = true;
 	
 	private List<CategoryDTO> categories = new ArrayList<>();
 
 	public KnowledgeDTO() {
 	}
 
-	public KnowledgeDTO(Long id, String title, String text, String archive) {
+	public KnowledgeDTO(Long id, String title, String titleImag,String imag, String introduction, String description, String collaborator, String archive) {
 		this.id = id;
 		this.title = title;
-		this.text = text;
+		this.titleImag = titleImag;
+		this.imag = imag;
+		this.introduction = introduction;
+		this.description = description;
+		this.collaborator = collaborator;
 		this.archive = archive;
 	}
 
 	public KnowledgeDTO(Knowledge entity) {
 		this.id = entity.getId();
 		this.title = entity.getTitle();
-		this.text = entity.getText();
+		this.titleImag = entity.getTitleImag();
+		this.imag = entity.getImag();
+		this.introduction = entity.getIntroduction();
+		this.description = entity.getDescription();
+		this.collaborator = entity.getCollaborator();
 		this.archive = entity.getArchive();
 		this.active = entity.isActive();
 	}
@@ -62,13 +78,20 @@ public class KnowledgeDTO {
 		this.title = title;
 	}
 
-	public String getText() {
-		return text;
-	}
+	public String getTitleImag() {return titleImag;}
+	public void setTitleImag(String titleImag) {this.titleImag = titleImag;}
 
-	public void setText(String text) {
-		this.text = text;
-	}
+	public String getImag() {return imag;}
+	public void setImag(String imag) {this.imag = imag;}
+
+	public String getIntroduction() {return introduction;}
+	public void setIntroduction(String introduction) {this.introduction = introduction;}
+
+	public String getDescription() {return description;}
+	public void setDescription(String description) { this.description = description;}
+
+	public String getCollaborator() {return collaborator;}
+	public void setCollaborator(String collaborator) {this.collaborator = collaborator;}
 
 	public String getArchive() {
 		return archive;
