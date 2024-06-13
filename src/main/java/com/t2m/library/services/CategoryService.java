@@ -66,7 +66,20 @@ public class CategoryService {
 			throw new ControllerNotFoundException("Id not found" + id);
 		}
 	}
-
+	
+	@Transactional
+	public CategoryDTO activate(Long id) {
+		try {
+			Category entity = repository.getReferenceById(id);
+			Boolean active = entity.getActive() == true ? false : true;
+			entity.setActive(active);
+			entity = repository.save(entity);
+			return new CategoryDTO(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ControllerNotFoundException("Id not found" + id);
+		}
+	}
+	
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public void delete(Long id) {
 		if (!repository.existsById(id)) {

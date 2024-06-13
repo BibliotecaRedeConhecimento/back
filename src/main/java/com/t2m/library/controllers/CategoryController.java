@@ -58,6 +58,12 @@ public class CategoryController {
 		return ResponseEntity.ok().body(dto);
 	}
 	
+	@PutMapping(value = "/{id}/activate")
+	public ResponseEntity<CategoryDTO> activate(@PathVariable Long id) {
+		service.activate(id);
+		return ResponseEntity.noContent().build();
+	}
+	
 	@DeleteMapping(value = "/{id}") 
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);

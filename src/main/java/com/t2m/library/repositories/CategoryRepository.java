@@ -17,7 +17,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 	@Query(nativeQuery = true, value = """
 			SELECT DISTINCT c.id, c.name
 			FROM tb_category c
-			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
+			LEFT JOIN tb_category_domain as cd ON cd.category_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
 			AND c.active = :active
@@ -27,7 +27,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 			SELECT COUNT(*) FROM (
 			SELECT DISTINCT c.id, c.name
 			FROM tb_category c
-			INNER JOIN tb_category_domain as cd ON cd_id = c.id
+			LEFT JOIN tb_category_domain as cd ON cd_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
 			AND c.active = :active
@@ -35,6 +35,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 			""")
 	Page<CategoryProjection> searchCategories(List<Long> domainIds, String name, Boolean active, Pageable pageable);
 	
-	@Query("SELECT obj FROM Category obj JOIN FETCH obj.domains WHERE obj.id IN :categoryIds ORDER BY obj.name")
+	@Query("SELECT obj FROM Category obj LEFT JOIN FETCH obj.domains WHERE obj.id IN :categoryIds ORDER BY obj.id")
 	List<Category> searchCategoriesWithDomains(List<Long> categoryIds);
 }
