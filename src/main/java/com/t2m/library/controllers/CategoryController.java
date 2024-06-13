@@ -33,8 +33,9 @@ public class CategoryController {
 	public ResponseEntity<Page<CategoryDTO>> findAllPaged(
 			@RequestParam(value = "domainId", defaultValue = "0") String domainId,
 			@RequestParam(value = "name", defaultValue = "") String name,
+			@RequestParam(value = "active", defaultValue = "true") Boolean active,
 			Pageable pageable) {
-		Page<CategoryDTO> list = service.findAllPaged(domainId, name, pageable);
+		Page<CategoryDTO> list = service.findAllPaged(domainId, name, active, pageable);
 		return ResponseEntity.ok().body(list);
 	}
 

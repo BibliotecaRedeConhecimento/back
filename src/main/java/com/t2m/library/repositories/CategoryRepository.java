@@ -20,7 +20,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
-			AND c.active = TRUE
+			AND c.active = :active
 			ORDER BY c.id
 			""",
 				countQuery = """
@@ -30,10 +30,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 			INNER JOIN tb_category_domain as cd ON cd_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
-			AND c.active = TRUE
+			AND c.active = :active
 			ORDER BY c.id
 			""")
-	Page<CategoryProjection> searchCategories(List<Long> domainIds, String name, Pageable pageable);
+	Page<CategoryProjection> searchCategories(List<Long> domainIds, String name, Boolean active, Pageable pageable);
 	
 	@Query("SELECT obj FROM Category obj JOIN FETCH obj.domains WHERE obj.id IN :categoryIds ORDER BY obj.name")
 	List<Category> searchCategoriesWithDomains(List<Long> categoryIds);

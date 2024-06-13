@@ -93,14 +93,14 @@ public class CategoryService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<CategoryDTO> findAllPaged(String domainId, String name, Pageable pageable) {
+	public Page<CategoryDTO> findAllPaged(String domainId, String name, Boolean active, Pageable pageable) {
 		
 		List<Long> domainIds = Arrays.asList();
 		if (!"0".equals(domainId)) {
 			domainIds = Arrays.asList(domainId.split(",")).stream().map(Long::parseLong).toList();
 		}
 		
-		Page<CategoryProjection> page = repository.searchCategories(domainIds, name, pageable);
+		Page<CategoryProjection> page = repository.searchCategories(domainIds, name, active, pageable);
 		List<Long> categoryIds = page.map(x -> x.getId()).toList();
 		
 		List<Category> entities = repository.searchCategoriesWithDomains(categoryIds);
