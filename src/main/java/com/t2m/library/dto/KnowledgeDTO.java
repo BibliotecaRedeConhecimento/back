@@ -76,18 +76,37 @@ public class KnowledgeDTO {
 		this.title = title;
 	}
 
-	public String getTitleMedia() {return titleMedia;}
-	public void setTitleMedia(String titleMedia) {this.titleMedia = titleMedia;}
+	public String getTitleMedia() {
+		return titleMedia;
+	}
 
+	public void setTitleMedia(String titleMedia) {
+		this.titleMedia = titleMedia;
+	}
 
-	public String getIntroduction() {return introduction;}
-	public void setIntroduction(String introduction) {this.introduction = introduction;}
+	public String getIntroduction() {
+		return introduction;
+	}
 
-	public String getDescription() {return description;}
-	public void setDescription(String description) { this.description = description;}
+	public void setIntroduction(String introduction) {
+		this.introduction = introduction;
+	}
 
-	public String getCollaborator() {return collaborator;}
-	public void setCollaborator(String collaborator) {this.collaborator = collaborator;}
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getCollaborator() {
+		return collaborator;
+	}
+
+	public void setCollaborator(String collaborator) {
+		this.collaborator = collaborator;
+	}
 
 	public String getArchive() {
 		return archive;
@@ -96,16 +115,18 @@ public class KnowledgeDTO {
 	public void setArchive(String archive) {
 		this.archive = archive;
 	}
-	
+
+	public Boolean getActive() {
+		return active;
+	}
+
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	public Boolean getActive() {return active;}
 
 	public List<CategoryDTO> getCategories() {
 		return categories;
 	}
-
 
 	@Override
 	public int hashCode() {

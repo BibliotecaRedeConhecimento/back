@@ -109,6 +109,9 @@ public class KnowledgeService {
 		entity.setTitle(dto.getTitle());
 		entity.setDescription(dto.getDescription());
 		entity.setArchive(dto.getArchive());
+		entity.setTitleMedia(dto.getTitleMedia());
+		entity.setIntroduction(dto.getIntroduction());
+		entity.setCollaborator(dto.getCollaborator());
 		
 		entity.getCategories().clear();
 		for (CategoryDTO catDto: dto.getCategories()) {
