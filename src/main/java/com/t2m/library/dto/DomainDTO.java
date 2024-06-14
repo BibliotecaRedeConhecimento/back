@@ -7,13 +7,14 @@ import java.util.Objects;
 import com.t2m.library.entities.Domain;
 
 import jakarta.validation.constraints.NotBlank;
-import org.springframework.lang.Nullable;
 
 public class DomainDTO {
 
     private Long id;
     @NotBlank(message = "Campo requerido")
     private String name;
+    
+    @NotBlank(message = "Campo requerido")
     private Boolean active;
     
     private List<CategoryDTO> categories = new ArrayList<>();

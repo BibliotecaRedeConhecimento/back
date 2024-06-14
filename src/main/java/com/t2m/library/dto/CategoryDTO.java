@@ -9,6 +9,7 @@ import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Domain;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 public class CategoryDTO {
 
@@ -19,6 +20,8 @@ public class CategoryDTO {
 	private Boolean active;
 	
 	private List<DomainDTO> knowledges = new ArrayList<>();
+	
+	@NotEmpty(message = "Categoria sem domínio não é permitido")
 	private List<DomainDTO> domains = new ArrayList<>();
 	
 	public CategoryDTO() {

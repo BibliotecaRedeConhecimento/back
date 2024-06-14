@@ -9,6 +9,7 @@ import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Knowledge;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 public class KnowledgeDTO {
 
@@ -27,6 +28,7 @@ public class KnowledgeDTO {
 	private String archive;
 	private Boolean active;
 	
+	@NotEmpty(message = "Conhecimento sem categoria não é permitido")
 	private List<CategoryDTO> categories = new ArrayList<>();
 
 	public KnowledgeDTO() {
