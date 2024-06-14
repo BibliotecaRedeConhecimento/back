@@ -1,16 +1,13 @@
 package com.t2m.library.services;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
-import com.t2m.library.dto.ActivateDTO;
-import com.t2m.library.dto.DomainDTO;
-import com.t2m.library.entities.Domain;
-import jakarta.persistence.EntityManager;
-import org.hibernate.Filter;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -20,6 +17,7 @@ import com.t2m.library.dto.CategoryDTO;
 import com.t2m.library.dto.KnowledgeDTO;
 import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Knowledge;
+import com.t2m.library.projections.KnowledgeProjection;
 import com.t2m.library.repositories.CategoryRepository;
 import com.t2m.library.repositories.KnowledgeRepository;
 import com.t2m.library.services.exceptions.ControllerNotFoundException;
@@ -31,19 +29,26 @@ import jakarta.persistence.EntityNotFoundException;
 public class KnowledgeService {
 	@Autowired
 	private KnowledgeRepository repository;
-	@Autowired
-	private EntityManager entityManager;
 	
 	@Autowired
 	private CategoryRepository categoryRepository;
 	
 	@Transactional(readOnly = true)
-	public Page<KnowledgeDTO> findAllPaged(Pageable pageable, boolean isActive) {
-		Session session = entityManager.unwrap(Session.class);
-		Filter filter = session.enableFilter("activeKnowledgeFilter");
-		filter.setParameter("isActive", isActive);
-		Page<Knowledge> list = repository.findAll(pageable);
-		return list.map(x -> new KnowledgeDTO(x));
+	public Page<KnowledgeDTO> findAllPaged(String categoryId, String title, Boolean active, Pageable pageable) {
+		
+		List<Long> categoryIds = Arrays.asList();
+		if (!"0".equals(categoryId)) {
+			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
+		}
+		
+		Page<KnowledgeProjection> page = repository.searchKnowledges(categoryIds, title, active, pageable);
+		List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
+		
+		List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);
+		List<KnowledgeDTO> dtos = entities.stream().map(k -> new KnowledgeDTO(k, k.getCategories())).toList();
+		
+		Page<KnowledgeDTO> pageDto = new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
+		return pageDto;
 	}
 
 	@Transactional(readOnly = true)
@@ -72,12 +77,14 @@ public class KnowledgeService {
 			throw new ControllerNotFoundException("Id not found" + id);
 		}
 	}
+	
 	@Transactional
-	public KnowledgeDTO activate(Long id, ActivateDTO dto) {
+	public KnowledgeDTO activate(Long id) {
 		try {
-			Knowledge entity = (Knowledge) repository.getReferenceById(id);
-			entity.setActive(dto.isActivated());
-			entity = (Knowledge) repository.save(entity);
+			Knowledge entity = repository.getReferenceById(id);
+			Boolean active = entity.getActive() == true ? false : true;
+			entity.setActive(active);
+			entity = repository.save(entity);
 			return new KnowledgeDTO(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ControllerNotFoundException("Id not found" + id);
@@ -109,4 +116,6 @@ public class KnowledgeService {
 			entity.getCategories().add(category);
 		}
 	}
+	
+	
 }

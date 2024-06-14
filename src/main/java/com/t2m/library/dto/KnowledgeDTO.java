@@ -25,11 +25,12 @@ public class KnowledgeDTO {
 	private String collaborator;
 	@NotBlank(message = "Campo requerido")
 	private String archive;
-	private boolean active = true;
+	private Boolean active;
 	
 	private List<CategoryDTO> categories = new ArrayList<>();
 
 	public KnowledgeDTO() {
+		this.active = true;
 	}
 
 	public KnowledgeDTO(Long id, String title, String titleMedia, String introduction, String description, String collaborator, String archive) {
@@ -40,6 +41,7 @@ public class KnowledgeDTO {
 		this.description = description;
 		this.collaborator = collaborator;
 		this.archive = archive;
+		this.active = true;
 	}
 
 	public KnowledgeDTO(Knowledge entity) {
@@ -50,12 +52,12 @@ public class KnowledgeDTO {
 		this.description = entity.getDescription();
 		this.collaborator = entity.getCollaborator();
 		this.archive = entity.getArchive();
-		this.active = entity.isActive();
+		this.active = true;
 	}
 	
 	public KnowledgeDTO(Knowledge entity, Set<Category> categories) {
 		this(entity);
-		categories.forEach(cat -> this.categories.add(new CategoryDTO(cat)));
+		categories.forEach(cat -> this.categories.add(new CategoryDTO(cat, cat.getDomains())));
 	}
 
 	public Long getId() {
@@ -94,7 +96,11 @@ public class KnowledgeDTO {
 	public void setArchive(String archive) {
 		this.archive = archive;
 	}
-	public boolean isActive() {return active;}
+	
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
+	public Boolean getActive() {return active;}
 
 	public List<CategoryDTO> getCategories() {
 		return categories;

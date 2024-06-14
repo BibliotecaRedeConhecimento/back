@@ -12,16 +12,9 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
-import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "tb_knowledge")
-@SQLDelete(sql = "UPDATE tb_knowledge SET active = false WHERE id=?")
-@FilterDef(name = "activeKnowledgeFilter", parameters = @ParamDef(name = "isActive", type = boolean.class))
-@Filter(name = "activeKnowledgeFilter", condition = "active = :isActive")
 public class Knowledge {
 	
 	@Id
@@ -33,7 +26,7 @@ public class Knowledge {
 	private String description;
 	private String collaborator;
 	private String archive;
-	private boolean active = true;
+	private Boolean active;
 
 	@ManyToMany
 	@JoinTable(name = "tb_knowledge_category", joinColumns = @JoinColumn(name = "knowledge_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
@@ -47,9 +40,11 @@ public class Knowledge {
 		this.description = description;
 		this.collaborator = collaborator;
 		this.archive = archive;
+		this.active = true;
 	}
 
 	public Knowledge() {
+		this.active = true;
 	}
 
 	public Long getId() {
@@ -90,10 +85,10 @@ public class Knowledge {
 		return categories;
 	}
 
-	public void setActive(boolean active) {
+	public void setActive(Boolean active) {	
 		this.active = active;
 	}
-	public boolean isActive() {return active;}
+	public Boolean getActive() {return active;}
 	
 	@Override
 	public int hashCode() {

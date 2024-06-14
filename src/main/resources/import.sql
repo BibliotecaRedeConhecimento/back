@@ -30,11 +30,11 @@ INSERT INTO tb_category_domain(category_id, domain_id) VALUES (4, 2);
 INSERT INTO tb_category_domain(category_id, domain_id) VALUES (5, 4);
 INSERT INTO tb_category_domain(category_id, domain_id) VALUES (6, 3);
 
-INSERT INTO tb_knowledge(title, text, archive) VALUES ('JavaScript e React', '', '');
-INSERT INTO tb_knowledge(title, text, archive) VALUES ('Java Spring Boot', '', '');
-INSERT INTO tb_knowledge(title, text, archive) VALUES ('JUnit (Java)', '', '');
-INSERT INTO tb_knowledge(title, text, archive) VALUES ('Cucumber (BDD)', '', '');
-INSERT INTO tb_knowledge(title, text, archive) VALUES ('Pandas (Python)', '', '');
+INSERT INTO tb_knowledge(title, active) VALUES ('JavaScript e React', true);
+INSERT INTO tb_knowledge(title, active) VALUES ('Java Spring Boot', true);
+INSERT INTO tb_knowledge(title, active) VALUES ('JUnit (Java)', true);
+INSERT INTO tb_knowledge(title, active) VALUES ('Cucumber (BDD)', true);
+INSERT INTO tb_knowledge(title, active) VALUES ('Pandas (Python)', true);
 
 INSERT INTO tb_knowledge_category(knowledge_id, category_id) VALUES (1, 1);
 INSERT INTO tb_knowledge_category(knowledge_id, category_id) VALUES (2, 2);
