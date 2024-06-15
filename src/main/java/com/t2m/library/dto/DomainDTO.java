@@ -14,7 +14,7 @@ public class DomainDTO {
     @NotBlank(message = "Campo requerido")
     private String name;
     
-    @NotBlank(message = "Campo requerido")
+//    @NotBlank(message = "Campo requerido") só pode ser usado em outros tipos(não booleanos)
     private Boolean active;
     
     private List<CategoryDTO> categories = new ArrayList<>();
