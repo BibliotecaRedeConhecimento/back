@@ -22,6 +22,7 @@ import com.t2m.library.repositories.CategoryRepository;
 import com.t2m.library.repositories.DomainRepository;
 import com.t2m.library.services.exceptions.ControllerNotFoundException;
 import com.t2m.library.services.exceptions.DatabaseException;
+import com.t2m.library.util.Utils;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -105,6 +106,7 @@ public class CategoryService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
 	public Page<CategoryDTO> findAllPaged(String domainId, String name, Boolean active, Pageable pageable) {
 		
@@ -113,14 +115,14 @@ public class CategoryService {
 			domainIds = Arrays.asList(domainId.split(",")).stream().map(Long::parseLong).toList();
 		}
 		
-		Page<CategoryProjection> page = repository.searchCategories(domainIds, name, active, pageable);
+		Page<CategoryProjection> page = repository.searchCategories(domainIds, name.trim(), active, pageable);
 		List<Long> categoryIds = page.map(x -> x.getId()).toList();
 		
 		List<Category> entities = repository.searchCategoriesWithDomains(categoryIds);
+		entities = (List<Category>) Utils.replace(page.getContent(), entities);
 		List<CategoryDTO> dtos = entities.stream().map(c -> new CategoryDTO(c, c.getDomains())).toList();
 		
-		Page<CategoryDTO> pageDto = new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
-		return pageDto;
+		return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
 	}
 	
 }

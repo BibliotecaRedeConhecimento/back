@@ -1,7 +1,6 @@
 package com.t2m.library.projections;
 
-public interface CategoryProjection {
+public interface CategoryProjection extends IdProjection<Long> {
 
-	Long getId();
 	String getName();
 }

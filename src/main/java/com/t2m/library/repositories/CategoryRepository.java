@@ -15,23 +15,24 @@ import com.t2m.library.projections.CategoryProjection;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
 	@Query(nativeQuery = true, value = """
+			SELECT * FROM (
 			SELECT DISTINCT c.id, c.name
 			FROM tb_category c
 			LEFT JOIN tb_category_domain as cd ON cd.category_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
 			AND c.active = :active
-			ORDER BY c.id
+			) AS tb_result
 			""",
 				countQuery = """
 			SELECT COUNT(*) FROM (
 			SELECT DISTINCT c.id, c.name
 			FROM tb_category c
-			LEFT JOIN tb_category_domain as cd ON cd_id = c.id
+			LEFT JOIN tb_category_domain as cd ON cd.category_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
 			AND c.active = :active
-			ORDER BY c.id
+			) AS tb_result
 			""")
 	Page<CategoryProjection> searchCategories(List<Long> domainIds, String name, Boolean active, Pageable pageable);
 	
