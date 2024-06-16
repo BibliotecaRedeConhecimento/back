@@ -1,7 +1,6 @@
 package com.t2m.library.projections;
 
-public interface KnowledgeProjection {
+public interface KnowledgeProjection extends IdProjection<Long> {
 
-	Long getId();
 	String getTitle();
 }

@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import com.t2m.library.projections.IdProjection;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +18,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "tb_knowledge")
-public class Knowledge {
+public class Knowledge implements IdProjection<Long> {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,6 +56,7 @@ public class Knowledge {
 		this.active = true;
 	}
 
+	@Override
 	public Long getId() {
 		return id;
 	}

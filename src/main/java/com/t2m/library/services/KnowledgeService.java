@@ -22,6 +22,7 @@ import com.t2m.library.repositories.CategoryRepository;
 import com.t2m.library.repositories.KnowledgeRepository;
 import com.t2m.library.services.exceptions.ControllerNotFoundException;
 import com.t2m.library.services.exceptions.DatabaseException;
+import com.t2m.library.util.Utils;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -34,21 +35,9 @@ public class KnowledgeService {
 	private CategoryRepository categoryRepository;
 	
 	@Transactional(readOnly = true)
-	public Page<KnowledgeDTO> findAllPaged(String categoryId, String title, Boolean active, Pageable pageable) {
-		
-		List<Long> categoryIds = Arrays.asList();
-		if (!"0".equals(categoryId)) {
-			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
-		}
-		
-		Page<KnowledgeProjection> page = repository.searchKnowledges(categoryIds, title, active, pageable);
-		List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
-		
-		List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);
-		List<KnowledgeDTO> dtos = entities.stream().map(k -> new KnowledgeDTO(k, k.getCategories())).toList();
-		
-		Page<KnowledgeDTO> pageDto = new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
-		return pageDto;
+	public Page<KnowledgeDTO> findAllPaged(Pageable pageable) {
+		Page<Knowledge> list = repository.findAll(pageable);
+		return list.map(x -> new KnowledgeDTO(x));
 	}
 
 	@Transactional(readOnly = true)
@@ -120,5 +109,22 @@ public class KnowledgeService {
 		}
 	}
 	
-	
+	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
+	public Page<KnowledgeDTO> findAllPaged(String categoryId, String title, Boolean active, Pageable pageable) {
+		
+		List<Long> categoryIds = Arrays.asList();
+		if (!"0".equals(categoryId)) {
+			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
+		}
+		
+		Page<KnowledgeProjection> page = repository.searchKnowledges(categoryIds, title.trim(), active, pageable);
+		List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
+		
+		List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);
+		entities = (List<Knowledge>) Utils.replace(page.getContent(), entities);
+		List<KnowledgeDTO> dtos = entities.stream().map(k -> new KnowledgeDTO(k, k.getCategories())).toList();
+		
+		return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
+	}
 }
