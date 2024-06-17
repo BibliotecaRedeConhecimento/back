@@ -1,18 +1,21 @@
 package com.t2m.library.entities;
 
-import jakarta.persistence.*;
-import jakarta.persistence.Table;
-import org.hibernate.annotations.*;
-
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
+
 @Entity
 @Table(name = "tb_domain")
-@SQLDelete(sql = "UPDATE tb_domain SET active = false WHERE id=?")
-@FilterDef(name = "activeDomainFilter", parameters = @ParamDef(name = "isActive", type = boolean.class))
-@Filter(name = "activeDomainFilter", condition = "active = :isActive")
 public class Domain {
     @Id
     @GeneratedValue(strategy  = GenerationType.IDENTITY)
@@ -20,7 +23,7 @@ public class Domain {
     
     @Column(unique = true)
     private String name;
-    private boolean active = true;
+    private Boolean active;
     
     @ManyToMany(mappedBy = "domains")
 	private Set<Category> categories = new HashSet<>();
@@ -29,9 +32,12 @@ public class Domain {
 	@JoinTable(name = "tb_domain_user", joinColumns = @JoinColumn(name = "domain_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private Set<User> users = new HashSet<>();
 
-    public Domain() {}
+    public Domain() {
+    	this.active = true;
+    }
     public Domain(Long Id, String name){
         this.name =  name;
+        this.active = true;
     }
     public Long getId() {return id;}
     public void setId(Long id) {this.id = id;}
@@ -41,7 +47,7 @@ public class Domain {
     public void setActive(boolean active) {
         this.active = active;
     }
-    public boolean isActive() {return active;}
+    public boolean getActive() {return active;}
 
     @Override
     public int hashCode() {

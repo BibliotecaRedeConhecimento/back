@@ -1,15 +1,7 @@
 package com.t2m.library.services;
 
-import com.t2m.library.dto.ActivateDTO;
-import com.t2m.library.dto.DomainDTO;
-import com.t2m.library.entities.Domain;
-import com.t2m.library.repositories.DomainRepository;
-import com.t2m.library.services.exceptions.ControllerNotFoundException;
-import com.t2m.library.services.exceptions.DatabaseException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.Filter;
-import org.hibernate.Session;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -18,16 +10,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import com.t2m.library.dto.DomainDTO;
+import com.t2m.library.entities.Domain;
+import com.t2m.library.repositories.DomainRepository;
+import com.t2m.library.services.exceptions.ControllerNotFoundException;
+import com.t2m.library.services.exceptions.DatabaseException;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class DomainService {
     @Autowired
     DomainRepository repository;
-
-    @Autowired
-    private EntityManager entityManager;
-
 
     @Transactional(readOnly = true)
     public DomainDTO findById(Long id) {
@@ -38,11 +32,8 @@ public class DomainService {
 
 
     @Transactional(readOnly = true)
-    public Page<DomainDTO> findAllPaged(Pageable pageable, boolean isActive) {
-        Session session = entityManager.unwrap(Session.class);
-        Filter filter = session.enableFilter("activeDomainFilter");
-        filter.setParameter("isActive", isActive);
-        Page<Domain> list = repository.findAll(pageable);
+    public Page<DomainDTO> findAllPaged(String name, Boolean active, Pageable pageable) {
+        Page<Domain> list = repository.searchDomains(name, active, pageable);
         return list.map(x -> new DomainDTO(x));
     }
 
@@ -65,17 +56,20 @@ public class DomainService {
             throw new ControllerNotFoundException("Id not found" + id);
         }
     }
+    
     @Transactional
-    public DomainDTO activate(Long id, ActivateDTO dto) {
-        try {
-            Domain entity = (Domain) repository.getReferenceById(id);
-            entity.setActive(dto.isActivated());
-            entity = (Domain) repository.save(entity);
-            return new DomainDTO(entity);
-        } catch (EntityNotFoundException e) {
-            throw new ControllerNotFoundException("Id not found" + id);
-        }
-    }
+	public DomainDTO activate(Long id) {
+		try {
+			Domain entity = repository.getReferenceById(id);
+			Boolean active = entity.getActive() == true ? false : true;
+			entity.setActive(active);
+			entity = repository.save(entity);
+			return new DomainDTO(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ControllerNotFoundException("Id not found" + id);
+		}
+	}
+    
     @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!repository.existsById(id)) {
@@ -88,4 +82,5 @@ public class DomainService {
             throw new DatabaseException("Integrity violation");
         }
     }
+    
 }

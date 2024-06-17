@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.t2m.library.dto.ActivateDTO;
 import com.t2m.library.dto.DomainDTO;
 import	com.t2m.library.dto.DomainDTO.SuccessMenssageDTO ;
 import com.t2m.library.services.DomainService;
@@ -32,8 +31,11 @@ public class DomainController {
 	DomainService service;
 
 	@GetMapping
-	public ResponseEntity<Page<DomainDTO>> findAll(Pageable pageable, @RequestParam(name="active", defaultValue = "true") String active) {
-		Page<DomainDTO> list = service.findAllPaged(pageable, Boolean.parseBoolean(active));
+	public ResponseEntity<Page<DomainDTO>> findAllPaged(
+			@RequestParam(value = "name", defaultValue = "") String name,
+			@RequestParam(value = "active", defaultValue = "true") Boolean active,
+			Pageable pageable) {
+		Page<DomainDTO> list = service.findAllPaged(name, active, pageable);
 		return ResponseEntity.ok().body(list);
 	}
 
@@ -60,8 +62,8 @@ public class DomainController {
 	}
 
 	@PutMapping(value = "/activate/{id}")
-	public ResponseEntity<SuccessMenssageDTO> activate(@PathVariable Long id, @Valid @RequestBody ActivateDTO dto) {
-		service.activate(id, dto);
+	public ResponseEntity<SuccessMenssageDTO> activate(@PathVariable Long id) {
+		service.activate(id);
 		return ResponseEntity.ok().body(new SuccessMenssageDTO());
 	}
 

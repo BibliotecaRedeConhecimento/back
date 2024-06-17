@@ -29,7 +29,7 @@ public class DomainDTO {
     public DomainDTO(Domain entity){
         this.id = entity.getId();
         this.name = entity.getName();
-        this.active = entity.isActive();
+        this.active = entity.getActive();
     }
 
     public Long getId() {return id;}
@@ -37,7 +37,7 @@ public class DomainDTO {
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
     public Boolean isActive() {return active;}
-    public void setActive(boolean active) {this.active = active;}
+    public void setActive(Boolean active) {this.active = active;}
 
 	public List<CategoryDTO> getCategories() {
 		return categories;
