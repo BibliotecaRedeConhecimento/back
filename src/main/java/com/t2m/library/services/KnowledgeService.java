@@ -111,14 +111,19 @@ public class KnowledgeService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
-	public Page<KnowledgeDTO> findAllPaged(String categoryId, String title, Boolean active, Pageable pageable) {
+	public Page<KnowledgeDTO> findAllPaged(String domainId, String categoryId, String title, Boolean active, Pageable pageable) {
+		
+		List<Long> domainIds = Arrays.asList();
+		if (!"0".equals(domainId)) {
+			domainIds = Arrays.asList(domainId.split(",")).stream().map(Long::parseLong).toList();
+		}
 		
 		List<Long> categoryIds = Arrays.asList();
 		if (!"0".equals(categoryId)) {
 			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
 		}
 		
-		Page<KnowledgeProjection> page = repository.searchKnowledges(categoryIds, title.trim(), active, pageable);
+		Page<KnowledgeProjection> page = repository.searchKnowledges(domainIds, categoryIds, title.trim(), active, pageable);
 		List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
 		
 		List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);

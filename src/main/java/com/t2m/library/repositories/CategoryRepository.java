@@ -18,7 +18,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 			SELECT * FROM (
 			SELECT DISTINCT c.id, c.name
 			FROM tb_category c
-			LEFT JOIN tb_category_domain as cd ON cd.category_id = c.id
+			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
 			AND c.active = :active
@@ -28,7 +28,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 			SELECT COUNT(*) FROM (
 			SELECT DISTINCT c.id, c.name
 			FROM tb_category c
-			LEFT JOIN tb_category_domain as cd ON cd.category_id = c.id
+			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
 			AND c.active = :active

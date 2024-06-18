@@ -16,8 +16,11 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 			SELECT * FROM (
 			SELECT DISTINCT k.id, k.title
 			FROM tb_knowledge k
-			LEFT JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
-			WHERE (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
+			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
+			INNER JOIN tb_category as c ON kc.knowledge_id = c.id
+			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
+			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
+			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
 			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
 			AND k.active = :active
 			) AS tb_result
@@ -26,13 +29,16 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 			SELECT COUNT(*) FROM (
 			SELECT DISTINCT k.id, k.title
 			FROM tb_knowledge k
-			LEFT JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
-			WHERE (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
+			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
+			INNER JOIN tb_category as c ON kc.knowledge_id = c.id
+			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
+			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
+			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
 			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
 			AND k.active = :active
 			) AS tb_result
 			""")
-	Page<KnowledgeProjection> searchKnowledges(List<Long> categoryIds, String title, Boolean active, Pageable pageable);
+	Page<KnowledgeProjection> searchKnowledges(List<Long> domainIds, List<Long> categoryIds, String title, Boolean active, Pageable pageable);
 	
 	@Query("SELECT obj FROM Knowledge obj LEFT JOIN FETCH obj.categories WHERE obj.id IN :knowledgeIds ORDER BY obj.id")
 	List<Knowledge> searchKnowledgesWithCategories(List<Long> knowledgeIds);

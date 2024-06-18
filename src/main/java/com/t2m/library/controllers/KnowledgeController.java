@@ -31,11 +31,12 @@ public class KnowledgeController {
 	
 	@GetMapping
 	public ResponseEntity<Page<KnowledgeDTO>> findAllPaged(
+			@RequestParam(value = "domainId", defaultValue = "0") String domainId,
 			@RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
 			@RequestParam(value = "title", defaultValue = "") String title,
 			@RequestParam(value = "active", defaultValue = "true") Boolean active,
 			Pageable pageable) {
-		Page<KnowledgeDTO> list = service.findAllPaged(categoryId, title, active, pageable);
+		Page<KnowledgeDTO> list = service.findAllPaged(domainId, categoryId, title, active, pageable);
 		return ResponseEntity.ok().body(list);
 	}
 
