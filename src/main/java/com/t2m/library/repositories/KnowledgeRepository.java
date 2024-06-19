@@ -17,7 +17,7 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 			SELECT DISTINCT k.id, k.title
 			FROM tb_knowledge k
 			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
-			INNER JOIN tb_category as c ON kc.knowledge_id = c.id
+			INNER JOIN tb_category as c ON kc.category_id = c.id
 			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
@@ -30,7 +30,7 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 			SELECT DISTINCT k.id, k.title
 			FROM tb_knowledge k
 			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
-			INNER JOIN tb_category as c ON kc.knowledge_id = c.id
+			INNER JOIN tb_category as c ON kc.category_id = c.id
 			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
