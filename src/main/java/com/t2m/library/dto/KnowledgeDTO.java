@@ -27,12 +27,14 @@ public class KnowledgeDTO {
 	@NotBlank(message = "Campo requerido")
 	private String archive;
 	private Boolean active;
+	private Boolean pending;
 	
 	@NotEmpty(message = "Conhecimento sem categoria não é permitido")
 	private List<CategoryDTO> categories = new ArrayList<>();
 
 	public KnowledgeDTO() {
 		this.active = true;
+		this.pending = false;
 	}
 
 	public KnowledgeDTO(Long id, String title, String titleMedia, String introduction, String description, String collaborator, String archive) {
@@ -44,6 +46,7 @@ public class KnowledgeDTO {
 		this.collaborator = collaborator;
 		this.archive = archive;
 		this.active = true;
+		this.pending = false;
 	}
 
 	public KnowledgeDTO(Knowledge entity) {
@@ -55,6 +58,7 @@ public class KnowledgeDTO {
 		this.collaborator = entity.getCollaborator();
 		this.archive = entity.getArchive();
 		this.active = true;
+		this.pending = false;
 	}
 	
 	public KnowledgeDTO(Knowledge entity, Set<Category> categories) {
@@ -124,6 +128,14 @@ public class KnowledgeDTO {
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+	
+	public Boolean getPending() {
+		return pending;
+	}
+
+	public void setPending(Boolean pending) {
+		this.pending = pending;
 	}
 
 	public List<CategoryDTO> getCategories() {

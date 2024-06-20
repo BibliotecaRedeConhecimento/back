@@ -36,6 +36,7 @@ public class Knowledge implements IdProjection<Long> {
 	private String collaborator;
 	private String archive;
 	private Boolean active;
+	private Boolean pending;
 
 	@ManyToMany
 	@JoinTable(name = "tb_knowledge_category", joinColumns = @JoinColumn(name = "knowledge_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
@@ -50,10 +51,12 @@ public class Knowledge implements IdProjection<Long> {
 		this.collaborator = collaborator;
 		this.archive = archive;
 		this.active = true;
+		this.pending = false;
 	}
 
 	public Knowledge() {
 		this.active = true;
+		this.pending = false;
 	}
 
 	@Override
@@ -119,6 +122,14 @@ public class Knowledge implements IdProjection<Long> {
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+	
+	public Boolean getPending() {
+		return pending;
+	}
+
+	public void setPending(Boolean pending) {
+		this.pending = pending;
 	}
 
 	public Set<Category> getCategories() {

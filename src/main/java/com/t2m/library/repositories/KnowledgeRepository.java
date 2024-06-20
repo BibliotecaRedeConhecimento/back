@@ -23,6 +23,7 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
 			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
 			AND k.active = :active
+			AND k.pending = :pending
 			) AS tb_result
 			""",
 				countQuery = """
@@ -36,9 +37,10 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
 			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
 			AND k.active = :active
+			AND k.pending = :pending
 			) AS tb_result
 			""")
-	Page<KnowledgeProjection> searchKnowledges(List<Long> domainIds, List<Long> categoryIds, String title, Boolean active, Pageable pageable);
+	Page<KnowledgeProjection> searchKnowledges(List<Long> domainIds, List<Long> categoryIds, String title, Boolean active, Boolean pending, Pageable pageable);
 	
 	@Query("SELECT obj FROM Knowledge obj LEFT JOIN FETCH obj.categories WHERE obj.id IN :knowledgeIds ORDER BY obj.id")
 	List<Knowledge> searchKnowledgesWithCategories(List<Long> knowledgeIds);

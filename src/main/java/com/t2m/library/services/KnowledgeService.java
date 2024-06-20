@@ -54,6 +54,15 @@ public class KnowledgeService {
 		entity = repository.save(entity);
 		return new KnowledgeDTO(entity);
 	}
+	
+	@Transactional
+	public KnowledgeDTO request(KnowledgeDTO dto) {
+		Knowledge entity = new Knowledge();
+		copyDtoToEntity(dto, entity);
+		entity.setPending(true);
+		entity = repository.save(entity);
+		return new KnowledgeDTO(entity);
+	}
 
 	@Transactional
 	public KnowledgeDTO update(Long id, KnowledgeDTO dto) {
@@ -73,6 +82,18 @@ public class KnowledgeService {
 			Knowledge entity = repository.getReferenceById(id);
 			Boolean active = entity.getActive() == true ? false : true;
 			entity.setActive(active);
+			entity = repository.save(entity);
+			return new KnowledgeDTO(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ControllerNotFoundException("Id not found" + id);
+		}
+	}
+	
+	@Transactional
+	public KnowledgeDTO accept(Long id) {
+		try {
+			Knowledge entity = repository.getReferenceById(id);
+			entity.setPending(false);
 			entity = repository.save(entity);
 			return new KnowledgeDTO(entity);
 		} catch (EntityNotFoundException e) {
@@ -111,7 +132,7 @@ public class KnowledgeService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
-	public Page<KnowledgeDTO> findAllPaged(String domainId, String categoryId, String title, Boolean active, Pageable pageable) {
+	public Page<KnowledgeDTO> findAllPaged(String domainId, String categoryId, String title, Boolean active, Boolean pending, Pageable pageable) {
 		
 		List<Long> domainIds = Arrays.asList();
 		if (!"0".equals(domainId)) {
@@ -123,7 +144,7 @@ public class KnowledgeService {
 			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
 		}
 		
-		Page<KnowledgeProjection> page = repository.searchKnowledges(domainIds, categoryIds, title.trim(), active, pageable);
+		Page<KnowledgeProjection> page = repository.searchKnowledges(domainIds, categoryIds, title.trim(), active, pending, pageable);
 		List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
 		
 		List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);

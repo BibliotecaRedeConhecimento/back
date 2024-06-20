@@ -35,8 +35,9 @@ public class KnowledgeController {
 			@RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
 			@RequestParam(value = "title", defaultValue = "") String title,
 			@RequestParam(value = "active", defaultValue = "true") Boolean active,
+			@RequestParam(value = "pending", defaultValue = "false") Boolean pending,
 			Pageable pageable) {
-		Page<KnowledgeDTO> list = service.findAllPaged(domainId, categoryId, title, active, pageable);
+		Page<KnowledgeDTO> list = service.findAllPaged(domainId, categoryId, title, active, pending, pageable);
 		return ResponseEntity.ok().body(list);
 	}
 
@@ -52,6 +53,13 @@ public class KnowledgeController {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
+	
+	@PostMapping(value = "/request")
+	public ResponseEntity<KnowledgeDTO> request(@Valid @RequestBody KnowledgeDTO dto) {
+		dto = service.request(dto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
+		return ResponseEntity.created(uri).body(dto);
+	}
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<KnowledgeDTO> update(@Valid @PathVariable Long id, @RequestBody KnowledgeDTO dto) {
@@ -61,6 +69,12 @@ public class KnowledgeController {
 	
 	@PutMapping(value = "/activate/{id}")
 	public ResponseEntity<KnowledgeDTO> activate(@PathVariable Long id) {
+		service.activate(id);
+		return ResponseEntity.noContent().build();
+	}
+	
+	@PutMapping(value = "/acceptRequest/{id}")
+	public ResponseEntity<KnowledgeDTO> acceptRequest(@PathVariable Long id) {
 		service.activate(id);
 		return ResponseEntity.noContent().build();
 	}
