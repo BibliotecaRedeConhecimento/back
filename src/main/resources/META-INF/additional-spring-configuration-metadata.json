@@ -18,5 +18,10 @@
     "name": "security.jwt.duration",
     "type": "java.lang.String",
     "description": "A description for 'security.jwt.duration'"
+  },
+  {
+    "name": "prop.swagger.dev-url",
+    "type": "java.lang.String",
+    "description": "A description for 'prop.swagger.dev-url'"
   }
 ]}
