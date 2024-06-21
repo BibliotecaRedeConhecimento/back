@@ -45,6 +45,6 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 	@Query("SELECT obj FROM Knowledge obj LEFT JOIN FETCH obj.categories WHERE obj.id IN :knowledgeIds ORDER BY obj.id")
 	List<Knowledge> searchKnowledgesWithCategories(List<Long> knowledgeIds);
 
-	Page<Knowledge> searchKnowledgesWithCategoriesByNeedsReview(boolean needsReview, Pageable pageable);
+	Page<Knowledge> searchKnowledgesWithCategoriesAndCAndCollaboratorByNeedsReview(boolean needsReview, Pageable pageable);
 
 }

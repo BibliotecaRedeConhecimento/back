@@ -58,7 +58,7 @@ public class KnowledgeDTO {
 		this.archive = entity.getArchive();
 		this.active = entity.getActive();
 		this.needsReview = entity.getNeedsReview();
-		entity.getCategories().forEach(cat -> this.categories.add(new CategoryDTO(cat)));
+		entity.getCategories().forEach(cat -> this.categories.add(new CategoryDTO(cat, cat.getDomains())));
 	}
 	
 	public KnowledgeDTO(Knowledge entity, Set<Category> categories) {
