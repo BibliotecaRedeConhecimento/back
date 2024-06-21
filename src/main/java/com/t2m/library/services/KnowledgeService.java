@@ -83,7 +83,7 @@ public class KnowledgeService {
 
 	@Transactional
 	public Page<KnowledgeDTO> NeedsReview(Pageable pageable) {
-		Page<Knowledge> entities = repository.searchKnowledgesByNeedsReview(true, pageable);
+		Page<Knowledge> entities = repository.searchKnowledgesWithCategoriesByNeedsReview(true, pageable);
 		return entities.map(x -> new KnowledgeDTO(x));
 	}
 
