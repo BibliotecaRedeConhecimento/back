@@ -35,10 +35,16 @@ public class KnowledgeController {
 			@RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
 			@RequestParam(value = "title", defaultValue = "") String title,
 			@RequestParam(value = "active", defaultValue = "true") Boolean active,
-			@RequestParam(value = "pending", defaultValue = "false") Boolean pending,
+			@RequestParam(value = "needsReview", defaultValue = "false") boolean needsReview,
 			Pageable pageable) {
-		Page<KnowledgeDTO> list = service.findAllPaged(domainId, categoryId, title, active, pending, pageable);
+		Page<KnowledgeDTO> list = service.findAllPaged(domainId, categoryId, title, active, needsReview, pageable);
 		return ResponseEntity.ok().body(list);
+	}
+
+	@GetMapping(value = "/review")
+	public ResponseEntity<Page<KnowledgeDTO>> review(Pageable pageable) {
+		Page<KnowledgeDTO> dto = service.NeedsReview(pageable);
+		return ResponseEntity.ok().body(dto);
 	}
 
 	@GetMapping(value = "/{id}")
@@ -50,13 +56,6 @@ public class KnowledgeController {
 	@PostMapping
 	public ResponseEntity<KnowledgeDTO> insert(@Valid @RequestBody KnowledgeDTO dto) {
 		dto = service.insert(dto);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
-		return ResponseEntity.created(uri).body(dto);
-	}
-	
-	@PostMapping(value = "/request")
-	public ResponseEntity<KnowledgeDTO> request(@Valid @RequestBody KnowledgeDTO dto) {
-		dto = service.request(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
@@ -72,10 +71,10 @@ public class KnowledgeController {
 		service.activate(id);
 		return ResponseEntity.noContent().build();
 	}
-	
-	@PutMapping(value = "/acceptRequest/{id}")
-	public ResponseEntity<KnowledgeDTO> acceptRequest(@PathVariable Long id) {
-		service.activate(id);
+
+	@PutMapping(value = "/accept/{id}")
+	public ResponseEntity<KnowledgeDTO> accept(@PathVariable Long id) {
+		service.acceptKnowledge(id);
 		return ResponseEntity.noContent().build();
 	}
 

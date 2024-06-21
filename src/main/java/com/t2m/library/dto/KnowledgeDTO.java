@@ -26,18 +26,17 @@ public class KnowledgeDTO {
 	private String collaborator;
 	@NotBlank(message = "Campo requerido")
 	private String archive;
-	private Boolean active;
-	private Boolean pending;
+	private Boolean active = true;
+	private boolean needsReview = false;
 	
 	@NotEmpty(message = "Conhecimento sem categoria não é permitido")
 	private List<CategoryDTO> categories = new ArrayList<>();
 
 	public KnowledgeDTO() {
 		this.active = true;
-		this.pending = false;
 	}
 
-	public KnowledgeDTO(Long id, String title, String titleMedia, String introduction, String description, String collaborator, String archive) {
+	public KnowledgeDTO(Long id, String title, String titleMedia, String introduction, String description, String collaborator, String archive, Boolean active, Boolean needsReview) {
 		this.id = id;
 		this.title = title;
 		this.titleMedia = titleMedia;
@@ -45,8 +44,8 @@ public class KnowledgeDTO {
 		this.description = description;
 		this.collaborator = collaborator;
 		this.archive = archive;
-		this.active = true;
-		this.pending = false;
+		this.active = active;
+		this.needsReview = needsReview;
 	}
 
 	public KnowledgeDTO(Knowledge entity) {
@@ -57,8 +56,8 @@ public class KnowledgeDTO {
 		this.description = entity.getDescription();
 		this.collaborator = entity.getCollaborator();
 		this.archive = entity.getArchive();
-		this.active = true;
-		this.pending = false;
+		this.active = entity.getActive();
+		this.needsReview = entity.getNeedsReview();
 	}
 	
 	public KnowledgeDTO(Knowledge entity, Set<Category> categories) {
@@ -129,14 +128,12 @@ public class KnowledgeDTO {
 	public void setActive(Boolean active) {
 		this.active = active;
 	}
-	
-	public Boolean getPending() {
-		return pending;
-	}
 
-	public void setPending(Boolean pending) {
-		this.pending = pending;
-	}
+	//Requisição para o colaborador criar conhecimento
+
+	public boolean getNeedsReview() {return needsReview;}
+
+	public void setNeedsReview(boolean NeedsReview) {this.needsReview = NeedsReview;}
 
 	public List<CategoryDTO> getCategories() {
 		return categories;

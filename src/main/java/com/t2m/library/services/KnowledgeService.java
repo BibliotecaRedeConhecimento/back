@@ -54,15 +54,6 @@ public class KnowledgeService {
 		entity = repository.save(entity);
 		return new KnowledgeDTO(entity);
 	}
-	
-	@Transactional
-	public KnowledgeDTO request(KnowledgeDTO dto) {
-		Knowledge entity = new Knowledge();
-		copyDtoToEntity(dto, entity);
-		entity.setPending(true);
-		entity = repository.save(entity);
-		return new KnowledgeDTO(entity);
-	}
 
 	@Transactional
 	public KnowledgeDTO update(Long id, KnowledgeDTO dto) {
@@ -88,12 +79,20 @@ public class KnowledgeService {
 			throw new ControllerNotFoundException("Id not found" + id);
 		}
 	}
-	
+
+
 	@Transactional
-	public KnowledgeDTO accept(Long id) {
+	public Page<KnowledgeDTO> NeedsReview(Pageable pageable) {
+		Page<Knowledge> entities = repository.searchKnowledgesByNeedsReview(true, pageable);
+		return entities.map(x -> new KnowledgeDTO(x));
+	}
+
+	@Transactional
+	public KnowledgeDTO acceptKnowledge(Long id) {
 		try {
 			Knowledge entity = repository.getReferenceById(id);
-			entity.setPending(false);
+			entity.setNeedsReview(false);
+			entity.setActive(true);
 			entity = repository.save(entity);
 			return new KnowledgeDTO(entity);
 		} catch (EntityNotFoundException e) {
@@ -122,7 +121,9 @@ public class KnowledgeService {
 		entity.setTitleMedia(dto.getTitleMedia());
 		entity.setIntroduction(dto.getIntroduction());
 		entity.setCollaborator(dto.getCollaborator());
-		
+		entity.setNeedsReview(dto.getNeedsReview());
+		entity.setActive(dto.getActive());
+
 		entity.getCategories().clear();
 		for (CategoryDTO catDto: dto.getCategories()) {
 			Category category = categoryRepository.getReferenceById(catDto.getId());
@@ -132,7 +133,7 @@ public class KnowledgeService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
-	public Page<KnowledgeDTO> findAllPaged(String domainId, String categoryId, String title, Boolean active, Boolean pending, Pageable pageable) {
+	public Page<KnowledgeDTO> findAllPaged(String domainId, String categoryId, String title, Boolean active, Boolean needsReview, Pageable pageable) {
 		
 		List<Long> domainIds = Arrays.asList();
 		if (!"0".equals(domainId)) {
@@ -144,7 +145,7 @@ public class KnowledgeService {
 			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
 		}
 		
-		Page<KnowledgeProjection> page = repository.searchKnowledges(domainIds, categoryIds, title.trim(), active, pending, pageable);
+		Page<KnowledgeProjection> page = repository.searchKnowledges(domainIds, categoryIds, title.trim(), active, needsReview, pageable);
 		List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
 		
 		List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);
