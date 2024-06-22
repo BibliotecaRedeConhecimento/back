@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -25,7 +27,7 @@ public class Domain {
     private String name;
     private Boolean active;
     
-    @ManyToMany(mappedBy = "domains")
+    @ManyToMany(mappedBy = "domains", cascade = CascadeType.ALL)
 	private Set<Category> categories = new HashSet<>();
     
     @ManyToMany
@@ -49,6 +51,17 @@ public class Domain {
     }
     public boolean getActive() {return active;}
 
+    public boolean hasCategories() {
+        return !categories.isEmpty();
+    }
+
+    @PreUpdate
+    private void preRemove() {
+        if (hasCategories()) {
+            throw new IllegalStateException("Não é possível inativar este dominio porque existem categorias associadas a ele");
+        }
+    }
+    
     @Override
     public int hashCode() {
         return Objects.hash(id);

@@ -19,9 +19,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 			SELECT DISTINCT c.id, c.name
 			FROM tb_category c
 			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
+			INNER JOIN tb_domain as d ON cd.domain_id = d.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
-			AND c.active = :active
+			AND (c.active = :active OR d.active = :active)
 			) AS tb_result
 			""",
 				countQuery = """
@@ -29,9 +30,10 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 			SELECT DISTINCT c.id, c.name
 			FROM tb_category c
 			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
+			INNER JOIN tb_domain as d ON cd.domain_id = d.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (LOWER(c.name) LIKE LOWER(CONCAT('%',:name,'%')))
-			AND c.active = :active
+			AND (c.active = :active OR d.active = :active)
 			) AS tb_result
 			""")
 	Page<CategoryProjection> searchCategories(List<Long> domainIds, String name, Boolean active, Pageable pageable);

@@ -19,10 +19,11 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
 			INNER JOIN tb_category as c ON kc.category_id = c.id
 			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
+			INNER JOIN tb_domain as d ON cd.domain_id = d.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
 			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
-			AND k.active = :active
+			AND (k.active = :active OR c.active = :active OR d.active = :active)
 			AND k.needs_review = :needsReview
 			) AS tb_result
 			""",
@@ -33,10 +34,11 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
 			INNER JOIN tb_category as c ON kc.category_id = c.id
 			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
+			INNER JOIN tb_domain as d ON cd.domain_id = d.id
 			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
 			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
 			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
-			AND k.active = :active
+			AND (k.active = :active OR c.active = :active OR d.active = :active)
 			AND k.needs_review = :needsReview
 			) AS tb_result
 			""")
