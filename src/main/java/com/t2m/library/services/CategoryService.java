@@ -75,12 +75,12 @@ public class CategoryService {
 			Category entity = repository.getReferenceById(id);
 			
 			if (!entity.getKnowledges().isEmpty()) {
-                throw new IllegalStateException("Não é possível ativar esta categoria porque existem conhecimentos associados");
+                throw new IllegalStateException("Não é possível desativar esta categoria porque há conhecimentos associados");
             }
 
             for (Knowledge knowledge : entity.getKnowledges()) {
                 if (knowledge.getActive()) {
-                    throw new IllegalStateException("Não é possível ativar esta categoria porque há conhecimentos ativas associados");
+                    throw new IllegalStateException("Não é possível desativar esta categoria porque há conhecimentos associados");
                 }
             }
 			

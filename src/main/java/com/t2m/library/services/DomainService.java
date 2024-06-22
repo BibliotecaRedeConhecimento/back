@@ -64,12 +64,12 @@ public class DomainService {
 			Domain entity = repository.getReferenceById(id);
 			
 			if (!entity.getCategories().isEmpty()) {
-                throw new IllegalStateException("Não é possível ativar este domínio porque existem categorias associadas");
+                throw new IllegalStateException("Não é possível desativar este domínio porque há categorias associadas");
             }
 
             for (Category category : entity.getCategories()) {
                 if (category.getActive()) {
-                    throw new IllegalStateException("Não é possível ativar este domínio porque há categorias ativas associadas");
+                    throw new IllegalStateException("Não é possível desativar este domínio porque há categorias associadas");
                 }
             }
 			
