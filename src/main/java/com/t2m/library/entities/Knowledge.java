@@ -6,18 +6,12 @@ import java.util.Set;
 
 import com.t2m.library.projections.IdProjection;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "tb_knowledge")
+@SQLDelete(sql = "UPDATE tb_knowledge SET active = false WHERE id=?")
 public class Knowledge implements IdProjection<Long> {
 	
 	@Id
@@ -38,7 +32,7 @@ public class Knowledge implements IdProjection<Long> {
 	private Boolean active;
 	private boolean needsReview;
 
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "tb_knowledge_category", joinColumns = @JoinColumn(name = "knowledge_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
 	private Set<Category> categories = new HashSet<>();
 	

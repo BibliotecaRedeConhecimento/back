@@ -16,9 +16,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "tb_category")
+@SQLDelete(sql = "UPDATE tb_category SET active = false WHERE id=?")
 public class Category implements IdProjection<Long> {
 
 	@Id
@@ -32,8 +34,8 @@ public class Category implements IdProjection<Long> {
 	
 	@ManyToMany(mappedBy = "categories", cascade = CascadeType.ALL)
 	private Set<Knowledge> knowledges = new HashSet<>();
-	
-	@ManyToMany
+
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(name = "tb_category_domain", joinColumns = @JoinColumn(name = "category_id"), inverseJoinColumns = @JoinColumn(name = "domain_id"))
 	private Set<Domain> domains = new HashSet<>();
 	

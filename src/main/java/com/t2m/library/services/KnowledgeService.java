@@ -71,10 +71,9 @@ public class KnowledgeService {
 	public KnowledgeDTO activate(Long id) {
 		try {
 			Knowledge entity = repository.getReferenceById(id);
-			Boolean active = entity.getActive() == true ? false : true;
-			entity.setActive(active);
-			entity = repository.save(entity);
-			return new KnowledgeDTO(entity);
+			entity.setActive(!entity.getActive());
+			Knowledge updated = repository.save(entity);
+			return new KnowledgeDTO(updated);
 		} catch (EntityNotFoundException e) {
 			throw new ControllerNotFoundException("Id not found" + id);
 		}
@@ -144,16 +143,16 @@ public class KnowledgeService {
 			if (!"0".equals(categoryId)) {
 				categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
 			}
-			
-			Page<KnowledgeProjection> page = (active == true) ? 
-					repository.searchActiveKnowledges(domainIds, categoryIds, title.trim(), active, needsReview, pageable) : 
+
+			Page<KnowledgeProjection> page = (active == true) ?
+					repository.searchActiveKnowledges(domainIds, categoryIds, title.trim(), active, needsReview, pageable) :
 					repository.searchInactiveKnowledges(domainIds, categoryIds, title.trim(), active, needsReview, pageable);
 			List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
-			
+
 			List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);
 			entities = (List<Knowledge>) Utils.replace(page.getContent(), entities);
 			List<KnowledgeDTO> dtos = entities.stream().map(k -> new KnowledgeDTO(k, k.getCategories())).toList();
-			
+
 			return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
 	}
 }

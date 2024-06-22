@@ -14,9 +14,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Table(name = "tb_domain")
+@SQLDelete(sql = "UPDATE tb_domain SET active = false WHERE id=?")
 public class Domain {
     @Id
     @GeneratedValue(strategy  = GenerationType.IDENTITY)

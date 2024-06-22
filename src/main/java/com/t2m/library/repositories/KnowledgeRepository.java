@@ -75,10 +75,9 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
 			) AS tb_result
 			""")
 	Page<KnowledgeProjection> searchInactiveKnowledges(List<Long> domainIds, List<Long> categoryIds, String title, Boolean active, Boolean needsReview, Pageable pageable);
-	
+
 	@Query("SELECT obj FROM Knowledge obj LEFT JOIN FETCH obj.categories WHERE obj.id IN :knowledgeIds ORDER BY obj.id")
 	List<Knowledge> searchKnowledgesWithCategories(List<Long> knowledgeIds);
 
 	Page<Knowledge> searchKnowledgesWithCategoriesAndCAndCollaboratorByNeedsReview(boolean needsReview, Pageable pageable);
-
 }
