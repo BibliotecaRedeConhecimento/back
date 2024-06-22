@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.t2m.library.dto.DomainDTO;
+import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Domain;
 import com.t2m.library.repositories.DomainRepository;
 import com.t2m.library.services.exceptions.ControllerNotFoundException;
@@ -61,6 +62,17 @@ public class DomainService {
 	public DomainDTO activate(Long id) {
 		try {
 			Domain entity = repository.getReferenceById(id);
+			
+			if (!entity.getCategories().isEmpty()) {
+                throw new IllegalStateException("Não é possível ativar este domínio porque existem categorias associadas");
+            }
+
+            for (Category category : entity.getCategories()) {
+                if (category.getActive()) {
+                    throw new IllegalStateException("Não é possível ativar este domínio porque há categorias ativas associadas");
+                }
+            }
+			
 			Boolean active = entity.getActive() == true ? false : true;
 			entity.setActive(active);
 			entity = repository.save(entity);

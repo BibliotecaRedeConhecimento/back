@@ -13,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
@@ -50,19 +49,12 @@ public class Domain {
         this.active = active;
     }
     public boolean getActive() {return active;}
-
-    public boolean hasCategories() {
-        return !categories.isEmpty();
-    }
-
-    @PreUpdate
-    private void preRemove() {
-        if (hasCategories()) {
-            throw new IllegalStateException("Não é possível inativar este dominio porque existem categorias associadas a ele");
-        }
-    }
     
-    @Override
+    public Set<Category> getCategories() {
+		return categories;
+	}
+    
+	@Override
     public int hashCode() {
         return Objects.hash(id);
     }

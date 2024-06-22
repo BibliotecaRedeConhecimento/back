@@ -17,6 +17,7 @@ import com.t2m.library.dto.CategoryDTO;
 import com.t2m.library.dto.DomainDTO;
 import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Domain;
+import com.t2m.library.entities.Knowledge;
 import com.t2m.library.projections.CategoryProjection;
 import com.t2m.library.repositories.CategoryRepository;
 import com.t2m.library.repositories.DomainRepository;
@@ -72,6 +73,17 @@ public class CategoryService {
 	public CategoryDTO activate(Long id) {
 		try {
 			Category entity = repository.getReferenceById(id);
+			
+			if (!entity.getKnowledges().isEmpty()) {
+                throw new IllegalStateException("Não é possível ativar esta categoria porque existem conhecimentos associados");
+            }
+
+            for (Knowledge knowledge : entity.getKnowledges()) {
+                if (knowledge.getActive()) {
+                    throw new IllegalStateException("Não é possível ativar esta categoria porque há conhecimentos ativas associados");
+                }
+            }
+			
 			Boolean active = entity.getActive() == true ? false : true;
 			entity.setActive(active);
 			entity = repository.save(entity);
