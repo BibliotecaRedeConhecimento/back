@@ -83,7 +83,7 @@ public class CategoryService {
                     throw new IllegalStateException("Não é possível desativar esta categoria porque há conhecimentos associados");
                 }
             }
-			
+            
 			Boolean active = entity.getActive() == true ? false : true;
 			entity.setActive(active);
 			entity = repository.save(entity);
@@ -127,7 +127,9 @@ public class CategoryService {
 			domainIds = Arrays.asList(domainId.split(",")).stream().map(Long::parseLong).toList();
 		}
 		
-		Page<CategoryProjection> page = repository.searchCategories(domainIds, name.trim(), active, pageable);
+		Page<CategoryProjection> page = (active == true) ? 
+				repository.searchActiveCategories(domainIds, name.trim(), active, pageable) :
+				repository.searchInactiveCategories(domainIds, name.trim(), active, pageable);
 		List<Long> categoryIds = page.map(x -> x.getId()).toList();
 		
 		List<Category> entities = repository.searchCategoriesWithDomains(categoryIds);

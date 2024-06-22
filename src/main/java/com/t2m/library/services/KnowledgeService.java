@@ -135,23 +135,25 @@ public class KnowledgeService {
 	@Transactional(readOnly = true)
 	public Page<KnowledgeDTO> findAllPaged(String domainId, String categoryId, String title, Boolean active, Boolean needsReview, Pageable pageable) {
 		
-		List<Long> domainIds = Arrays.asList();
-		if (!"0".equals(domainId)) {
-			domainIds = Arrays.asList(domainId.split(",")).stream().map(Long::parseLong).toList();
-		}
-		
-		List<Long> categoryIds = Arrays.asList();
-		if (!"0".equals(categoryId)) {
-			categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
-		}
-		
-		Page<KnowledgeProjection> page = repository.searchKnowledges(domainIds, categoryIds, title.trim(), active, needsReview, pageable);
-		List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
-		
-		List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);
-		entities = (List<Knowledge>) Utils.replace(page.getContent(), entities);
-		List<KnowledgeDTO> dtos = entities.stream().map(k -> new KnowledgeDTO(k, k.getCategories())).toList();
-		
-		return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
+			List<Long> domainIds = Arrays.asList();
+			if (!"0".equals(domainId)) {
+				domainIds = Arrays.asList(domainId.split(",")).stream().map(Long::parseLong).toList();
+			}
+			
+			List<Long> categoryIds = Arrays.asList();
+			if (!"0".equals(categoryId)) {
+				categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
+			}
+			
+			Page<KnowledgeProjection> page = (active == true) ? 
+					repository.searchActiveKnowledges(domainIds, categoryIds, title.trim(), active, needsReview, pageable) : 
+					repository.searchInactiveKnowledges(domainIds, categoryIds, title.trim(), active, needsReview, pageable);
+			List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
+			
+			List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);
+			entities = (List<Knowledge>) Utils.replace(page.getContent(), entities);
+			List<KnowledgeDTO> dtos = entities.stream().map(k -> new KnowledgeDTO(k, k.getCategories())).toList();
+			
+			return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
 	}
 }
