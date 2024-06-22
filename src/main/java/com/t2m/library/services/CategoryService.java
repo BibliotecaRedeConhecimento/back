@@ -73,10 +73,6 @@ public class CategoryService {
 	public CategoryDTO activate(Long id) {
 		try {
 			Category entity = repository.getReferenceById(id);
-			
-			if (!entity.getKnowledges().isEmpty()) {
-                throw new IllegalStateException("Não é possível desativar esta categoria porque há conhecimentos associados");
-            }
 
             for (Knowledge knowledge : entity.getKnowledges()) {
                 if (knowledge.getActive()) {

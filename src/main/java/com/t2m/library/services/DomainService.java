@@ -62,10 +62,6 @@ public class DomainService {
 	public DomainDTO activate(Long id) {
 		try {
 			Domain entity = repository.getReferenceById(id);
-			
-			if (!entity.getCategories().isEmpty()) {
-                throw new IllegalStateException("Não é possível desativar este domínio porque há categorias associadas");
-            }
 
             for (Category category : entity.getCategories()) {
                 if (category.getActive()) {
