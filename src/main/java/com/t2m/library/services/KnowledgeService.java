@@ -1,17 +1,11 @@
 package com.t2m.library.services;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
-import filters.KnowledgeFilter;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +14,14 @@ import com.t2m.library.dto.CategoryDTO;
 import com.t2m.library.dto.KnowledgeDTO;
 import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Knowledge;
-import com.t2m.library.projections.KnowledgeProjection;
 import com.t2m.library.repositories.CategoryRepository;
 import com.t2m.library.repositories.KnowledgeRepository;
 import com.t2m.library.services.exceptions.ControllerNotFoundException;
 import com.t2m.library.services.exceptions.DatabaseException;
-import com.t2m.library.util.Utils;
 
+import filters.KnowledgeFilter;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 
 @Service
 public class KnowledgeService {
@@ -141,7 +135,6 @@ public class KnowledgeService {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
 	public Page<KnowledgeDTO> findAllPaged(@NotNull KnowledgeFilter filter, @NotNull Pageable pageable) {
 		KnowledgeRepository.KnowledgeSpecification specification = new KnowledgeRepository.KnowledgeSpecification(filter);

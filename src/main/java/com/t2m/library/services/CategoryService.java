@@ -17,7 +17,6 @@ import com.t2m.library.dto.CategoryDTO;
 import com.t2m.library.dto.DomainDTO;
 import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Domain;
-import com.t2m.library.entities.Knowledge;
 import com.t2m.library.projections.CategoryProjection;
 import com.t2m.library.repositories.CategoryRepository;
 import com.t2m.library.repositories.DomainRepository;

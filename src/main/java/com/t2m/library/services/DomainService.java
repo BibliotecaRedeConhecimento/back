@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.t2m.library.dto.DomainDTO;
-import com.t2m.library.entities.Category;
 import com.t2m.library.entities.Domain;
 import com.t2m.library.repositories.DomainRepository;
 import com.t2m.library.services.exceptions.ControllerNotFoundException;
