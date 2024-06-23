@@ -73,12 +73,13 @@ public class CategoryService {
 	public CategoryDTO activate(Long id) {
 		try {
 			Category entity = repository.getReferenceById(id);
+			if (entity.getActive() && entity.getKnowledges().stream().anyMatch(x -> x.getActive())) {
+				throw new IllegalStateException("Não é possível desativar esta categoria porque há conhecimentos associados ativos");
+			}
 
-            for (Knowledge knowledge : entity.getKnowledges()) {
-                if (knowledge.getActive()) {
-                    throw new IllegalStateException("Não é possível desativar esta categoria porque há conhecimentos associados");
-                }
-            }
+			if (!entity.getActive() && entity.getDomains().stream().anyMatch(x -> !x.getActive())) {
+				throw new IllegalStateException("Não é possível ativar esta categoria porque há dominios associados inativos");
+			}
 
 			entity.setActive(!entity.getActive());
 			entity = repository.save(entity);

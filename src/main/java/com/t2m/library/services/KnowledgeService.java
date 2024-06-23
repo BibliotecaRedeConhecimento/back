@@ -74,6 +74,14 @@ public class KnowledgeService {
 	public KnowledgeDTO activate(Long id) {
 		try {
 			Knowledge entity = repository.getReferenceById(id);
+			if (!entity.getActive() && entity.getCategories().stream().anyMatch(x -> !x.getActive())){
+				throw new IllegalStateException("Não é possível reativar este conhemciento porque há categorias relacionadas inativas");
+			}
+
+			if (!entity.getActive() && entity.getCategories().stream().anyMatch(x -> x.getDomains().stream().anyMatch(y -> !y.getActive()))){
+				throw new IllegalStateException("Não é possível reativar este conhemciento porque há domínios relacionados inativos");
+			}
+
 			entity.setActive(!entity.getActive());
 			Knowledge updated = repository.save(entity);
 			return new KnowledgeDTO(updated);
