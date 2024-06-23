@@ -42,6 +42,10 @@ public class Category implements IdProjection<Long> {
 	public Category() {
 		this.active = true;
 	}
+	public Category(String id) {
+		this.id = Long.parseLong(id);
+		this.active = true;
+	}
 
 	public Category(Long id, String name) {
 		this.id = id;

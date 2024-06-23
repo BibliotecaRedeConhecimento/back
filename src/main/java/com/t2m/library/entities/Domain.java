@@ -38,6 +38,12 @@ public class Domain {
     public Domain() {
     	this.active = true;
     }
+
+    public Domain(String id) {
+        this.id = Long.parseLong(id);
+        this.active = true;
+    }
+
     public Domain(Long Id, String name){
         this.name =  name;
         this.active = true;

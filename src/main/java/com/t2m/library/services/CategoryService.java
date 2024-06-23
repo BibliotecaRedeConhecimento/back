@@ -79,9 +79,8 @@ public class CategoryService {
                     throw new IllegalStateException("Não é possível desativar esta categoria porque há conhecimentos associados");
                 }
             }
-            
-			Boolean active = entity.getActive() == true ? false : true;
-			entity.setActive(active);
+
+			entity.setActive(!entity.getActive());
 			entity = repository.save(entity);
 			return new CategoryDTO(entity);
 		} catch (EntityNotFoundException e) {

@@ -69,8 +69,7 @@ public class DomainService {
                 }
             }
 			
-			Boolean active = entity.getActive() == true ? false : true;
-			entity.setActive(active);
+			entity.setActive(!entity.getActive());
 			entity = repository.save(entity);
 			return new DomainDTO(entity);
 		} catch (EntityNotFoundException e) {

@@ -2,6 +2,7 @@ package com.t2m.library.controllers;
 
 import java.net.URI;
 
+import filters.KnowledgeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,13 +32,19 @@ public class KnowledgeController {
 	
 	@GetMapping
 	public ResponseEntity<Page<KnowledgeDTO>> findAllPaged(
-			@RequestParam(value = "domainId", defaultValue = "0") String domainId,
-			@RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
-			@RequestParam(value = "title", defaultValue = "") String title,
+			@RequestParam(value = "domainId", required = false) String domainId,
+			@RequestParam(value = "categoryId", required = false) String categoryId,
+			@RequestParam(value = "title", required = false) String title,
 			@RequestParam(value = "active", defaultValue = "true") Boolean active,
 			@RequestParam(value = "needsReview", defaultValue = "false") boolean needsReview,
 			Pageable pageable) {
-		Page<KnowledgeDTO> list = service.findAllPaged(domainId, categoryId, title, active, needsReview, pageable);
+		Page<KnowledgeDTO> list = service.findAllPaged(new KnowledgeFilter(
+				title,
+				categoryId,
+				domainId,
+				active,
+				needsReview),
+			pageable);
 		return ResponseEntity.ok().body(list);
 	}
 

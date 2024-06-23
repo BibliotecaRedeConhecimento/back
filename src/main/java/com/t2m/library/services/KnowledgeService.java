@@ -4,11 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import filters.KnowledgeFilter;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,27 +135,9 @@ public class KnowledgeService {
 	
 	@SuppressWarnings("unchecked")
 	@Transactional(readOnly = true)
-	public Page<KnowledgeDTO> findAllPaged(String domainId, String categoryId, String title, Boolean active, Boolean needsReview, Pageable pageable) {
-		
-			List<Long> domainIds = Arrays.asList();
-			if (!"0".equals(domainId)) {
-				domainIds = Arrays.asList(domainId.split(",")).stream().map(Long::parseLong).toList();
-			}
-			
-			List<Long> categoryIds = Arrays.asList();
-			if (!"0".equals(categoryId)) {
-				categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
-			}
-
-			Page<KnowledgeProjection> page = (active == true) ?
-					repository.searchActiveKnowledges(domainIds, categoryIds, title.trim(), active, needsReview, pageable) :
-					repository.searchInactiveKnowledges(domainIds, categoryIds, title.trim(), active, needsReview, pageable);
-			List<Long> knowledgeIds = page.map(x -> x.getId()).toList();
-
-			List<Knowledge> entities = repository.searchKnowledgesWithCategories(knowledgeIds);
-			entities = (List<Knowledge>) Utils.replace(page.getContent(), entities);
-			List<KnowledgeDTO> dtos = entities.stream().map(k -> new KnowledgeDTO(k, k.getCategories())).toList();
-
-			return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
+	public Page<KnowledgeDTO> findAllPaged(@NotNull KnowledgeFilter filter, @NotNull Pageable pageable) {
+		KnowledgeRepository.KnowledgeSpecification specification = new KnowledgeRepository.KnowledgeSpecification(filter);
+		Page<Knowledge> list = repository.findAll(specification, pageable);
+		return list.map(x -> new KnowledgeDTO(x));
 	}
 }

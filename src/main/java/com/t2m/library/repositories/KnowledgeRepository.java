@@ -1,83 +1,55 @@
 package com.t2m.library.repositories;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import filters.KnowledgeFilter;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import com.t2m.library.entities.Knowledge;
 import com.t2m.library.projections.KnowledgeProjection;
 
-public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>{
+public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>, JpaSpecificationExecutor<Knowledge> {
 
-	@Query(nativeQuery = true, value = """
-			SELECT * FROM (
-			SELECT DISTINCT k.id, k.title
-			FROM tb_knowledge k
-			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
-			INNER JOIN tb_category as c ON kc.category_id = c.id
-			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
-			INNER JOIN tb_domain as d ON cd.domain_id = d.id
-			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
-			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
-			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
-			AND (k.active = :active AND c.active = :active AND d.active = :active)
-			AND k.needs_review = :needsReview
-			) AS tb_result
-			""",
-				countQuery = """
-			SELECT COUNT(*) FROM (
-			SELECT DISTINCT k.id, k.title
-			FROM tb_knowledge k
-			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
-			INNER JOIN tb_category as c ON kc.category_id = c.id
-			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
-			INNER JOIN tb_domain as d ON cd.domain_id = d.id
-			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
-			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
-			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
-			AND (k.active = :active AND c.active = :active AND d.active = :active)
-			AND k.needs_review = :needsReview
-			) AS tb_result
-			""")
-	Page<KnowledgeProjection> searchActiveKnowledges(List<Long> domainIds, List<Long> categoryIds, String title, Boolean active, Boolean needsReview, Pageable pageable);
-	
-	@Query(nativeQuery = true, value = """
-			SELECT * FROM (
-			SELECT DISTINCT k.id, k.title
-			FROM tb_knowledge k
-			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
-			INNER JOIN tb_category as c ON kc.category_id = c.id
-			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
-			INNER JOIN tb_domain as d ON cd.domain_id = d.id
-			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
-			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
-			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
-			AND (k.active = :active OR c.active = :active OR d.active = :active)
-			AND k.needs_review = :needsReview
-			) AS tb_result
-			""",
-			countQuery = """
-			SELECT COUNT(*) FROM (
-			SELECT DISTINCT k.id, k.title
-			FROM tb_knowledge k
-			INNER JOIN tb_knowledge_category as kc ON kc.knowledge_id = k.id
-			INNER JOIN tb_category as c ON kc.category_id = c.id
-			INNER JOIN tb_category_domain as cd ON cd.category_id = c.id
-			INNER JOIN tb_domain as d ON cd.domain_id = d.id
-			WHERE (:domainIds IS NULL OR cd.domain_id IN :domainIds)
-			AND (:categoryIds IS NULL OR kc.category_id IN :categoryIds)
-			AND (LOWER(k.title) LIKE LOWER(CONCAT('%',:title,'%')))
-			AND (k.active = :active OR c.active = :active OR d.active = :active)
-			AND k.needs_review = :needsReview
-			) AS tb_result
-			""")
-	Page<KnowledgeProjection> searchInactiveKnowledges(List<Long> domainIds, List<Long> categoryIds, String title, Boolean active, Boolean needsReview, Pageable pageable);
+	record KnowledgeSpecification(@NotNull KnowledgeFilter filter) implements Specification<Knowledge> {
+		@NotNull
+		@Override
+		public Predicate toPredicate(@NotNull Root<Knowledge> root, @NotNull CriteriaQuery<?> query, @NotNull CriteriaBuilder builder) {
+			List<Predicate> exps = new ArrayList<>();
+			filter.getTitle().ifPresent(title -> exps.add(builder.like(builder.lower(root.get("title")), title)));
 
-	@Query("SELECT obj FROM Knowledge obj LEFT JOIN FETCH obj.categories WHERE obj.id IN :knowledgeIds ORDER BY obj.id")
-	List<Knowledge> searchKnowledgesWithCategories(List<Long> knowledgeIds);
+			filter.getCategories().ifPresent(categories -> {
+				Predicate[] predicates = categories.stream()
+						.map(category -> builder.equal(root.join("categories"), category))
+						.toArray(Predicate[]::new);
+				exps.add(builder.or(predicates));
+			});
+
+			filter.getDomains().ifPresent(domains -> {
+				Predicate[] predicates = domains.stream()
+						.map(domain -> builder.equal(root.join("categories").join("domains"), domain))
+						.toArray(Predicate[]::new);
+				exps.add(builder.or(predicates));
+			});
+
+			filter.getActive().ifPresent(active -> exps.add(builder.equal(root.get("active"), active)));
+
+			filter.getNeedsReview().ifPresent(needsReview -> exps.add(builder.equal(root.get("needsReview"), needsReview)));
+
+
+			return builder.and(exps.toArray(new Predicate[0]));
+		};
+	}
 
 	Page<Knowledge> searchKnowledgesWithCategoriesAndCAndCollaboratorByNeedsReview(boolean needsReview, Pageable pageable);
 }
