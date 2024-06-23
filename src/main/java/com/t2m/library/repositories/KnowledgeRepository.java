@@ -26,7 +26,7 @@ public interface KnowledgeRepository extends JpaRepository<Knowledge, Long>, Jpa
 		@Override
 		public Predicate toPredicate(@NotNull Root<Knowledge> root, @NotNull CriteriaQuery<?> query, @NotNull CriteriaBuilder builder) {
 			List<Predicate> exps = new ArrayList<>();
-			filter.getTitle().ifPresent(title -> exps.add(builder.like(builder.lower(root.get("title")), title)));
+			filter.getTitle().ifPresent(title -> exps.add(builder.like(builder.lower(root.get("title")), "%"+title.toLowerCase()+"%")));
 
 			filter.getCategories().ifPresent(categories -> {
 				Predicate[] predicates = categories.stream()
