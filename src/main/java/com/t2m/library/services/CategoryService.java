@@ -45,7 +45,7 @@ public class CategoryService {
 	public CategoryDTO findById(Long id) {
 		Optional<Category> obj = repository.findById(id);
 		Category entity = obj.orElseThrow(() -> new ControllerNotFoundException("Entity not found"));
-		return new CategoryDTO(entity);
+		return new CategoryDTO(entity, entity.getDomains());
 	}
 
 	@Transactional
